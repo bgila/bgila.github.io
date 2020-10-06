@@ -68,3 +68,13 @@
         display: block;
     }
 }
+
+.subscribe {
+    height: 650px;
+}
+
+@media (max-width: 400px) {
+    .subscribe {
+        height: 1000px;
+    }
+}
