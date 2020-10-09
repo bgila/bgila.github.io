@@ -70,11 +70,11 @@
 }
 
 .subscribe {
-    height: 650px;
+    height: 750px;
 }
 
 @media (max-width: 400px) {
     .subscribe {
-        height: 830px;
+        height: 950px;
     }
 }
