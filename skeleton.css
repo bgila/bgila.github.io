@@ -162,6 +162,13 @@ a {
 a:hover {
   color: #009900; }
 
+a.highlight {
+  text-decoration: none;
+  color: #000000;
+}
+a.highlight:hover {
+  color: #009900;
+ }
 
 /* Buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
