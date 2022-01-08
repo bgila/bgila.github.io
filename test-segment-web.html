@@ -1,0 +1,212 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+    <style>
+      form {
+        width: 500px;
+        /* Form outline */
+        padding: 1em;
+        border: 1px solid #CCC;
+        border-radius: 1em;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      form li + li {
+        margin-top: 1em;
+      }
+
+      label {
+        /* Uniform size & alignment */
+        display: inline-block;
+        width: 140px;
+        text-align: right;
+      }
+
+      input,
+      textarea {
+        /* To make sure that all text fields have the same font settings
+          By default, textareas have a monospace font */
+        font: 1em sans-serif;
+
+        /* Uniform text field size */
+        width: 300px;
+        box-sizing: border-box;
+
+        /* Match form field borders */
+        border: 1px solid #999;
+      }
+
+      input:focus,
+      textarea:focus {
+        /* Additional highlight for focused elements */
+        border-color: #000;
+      }
+
+      textarea {
+        /* Align multiline text fields with their labels */
+        vertical-align: top;
+
+        /* Provide space to type some text */
+        height: 5em;
+      }
+
+      .button {
+        /* Align buttons with the text fields */
+        padding-left: 140px; /* same size as the label elements */
+      }
+
+      button {
+        /* This extra margin represent roughly the same space as the space
+          between the labels and their text fields */
+        margin-left: .5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Test Segment Web</h2>
+    <p style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Select an event type to start, then add details and press the button to trigger!</p>
+    <form>
+      <fieldset>
+        <legend>Segment event type</legend>
+        <ul>
+          <li>
+            <label for="track">Track</label>
+            <input type="radio" id="track" name="eventType" value="track" onclick="handleRadio(this);">
+          </li>
+          <li>
+            <label for="identify">Identify</label>
+            <input type="radio" id="curry" name="eventType" value="identify" onclick="handleRadio(this);">
+          </li>
+          <li>
+            <label for="alias">Alias</label>
+            <input type="radio" id="alias" name="eventType" value="alias" onclick="handleRadio(this);">
+          </li>
+        </ul>
+      </fieldset>
+
+      <div id="eventNameDiv" style="display: none;">
+        <label for="eventName">Event name</label>
+        <input type="text" id="eventName" name="eventName">
+      </div>
+
+      <div id="userIdDiv" style="display: none;">
+        <label for="userId">User ID</label>
+        <input type="text" id="userId" name="userId">
+      </div>
+
+      <div id="attributesDiv" style="display: none;">
+        <p>For each attribute, enter its name followed by its value. Click the + to add more!</p>
+        <button onclick="handleAddAttribute(this);" type="button">Add attribute</button>
+        <p><b>Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Value</b></p>
+        <input type="text" style="width: 200; margin-right: 5px;" id="attributes0Key" name="attributes0Key">
+        <input type="text" style="width: 200;" id="attributes0Value" name="attributes0Value">
+        <br>
+        <input type="text" style="width: 200; margin-right: 5px;" id="attributes1Key" name="attributes1Key">
+        <input type="text" style="width: 200;" id="attributes1Value" name="attributes1Value">
+        <br>
+      </div>
+      <div class="button" id="submitButtonDiv" style="display: none;">
+        <br>
+        <button onclick="handleSubmit(this);" type="button">Trigger segment event</button>
+        <p id="submitMessage"></p>
+      </div>
+    </form>
+    <script>
+      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="iL2eUeOQ0OcvqK6LBqW1XHplzmduER3x";;analytics.SNIPPET_VERSION="4.15.3";
+      analytics.load("iL2eUeOQ0OcvqK6LBqW1XHplzmduER3x");
+      analytics.page();
+      }}();
+
+      const attributeKeyElems = [document.getElementById("attributes0Key"), document.getElementById("attributes1Key")];
+      const attributeValueElems = [document.getElementById("attributes0Value"), document.getElementById("attributes1Value")];
+      let attributesCount = 2;
+
+      function handleRadio(radio) {
+        switch (radio.value) {
+          case 'track':
+            document.getElementById("userIdDiv").style.display = "none";
+            document.getElementById("eventNameDiv").style.display = "block";
+            break;
+          case 'identify':
+            document.getElementById("eventNameDiv").style.display = "none";
+            document.getElementById("userIdDiv").style.display = "block";
+            document.getElementById("attributesDiv").style.display = "block";
+            break;
+          case 'alias':
+          document.getElementById("eventNameDiv").style.display = "none";
+            document.getElementById("userIdDiv").style.display = "block";
+            break;
+          default:
+            break;
+        }
+
+        document.getElementById("submitButtonDiv").style.display = "block";
+      }
+
+      function handleAddAttribute() {
+        const attributesDiv = document.getElementById("attributesDiv");
+        const keyElem = document.createElement('input');
+        keyElem.type = "text";
+        keyElem.style = "width: 200; margin-right: 9px;";
+        keyElem.id = `attributes${attributesCount}Key`;
+        keyElem.name = `attributes${attributesCount}Key`;
+        const valueElem = document.createElement('input');
+        valueElem.type = "text";
+        valueElem.style = "width: 200;";
+        valueElem.id = `attributes${attributesCount}Value`;
+        valueElem.name = `attributes${attributesCount}Value`;
+        attributeKeyElems.push(keyElem);
+        attributeValueElems.push(valueElem);
+        attributesCount += 1;
+        attributesDiv.append(keyElem, valueElem, document.createElement('br'));
+      }
+
+      function handleSubmit() {
+        let message;
+
+        switch (radio.value) {
+          case 'track':
+            if (!document.getElementById("eventName").innerText) {
+              message = 'Error: Please input an event name.';
+            } else {
+              analytics.track(document.getElementById("eventName").innerText);
+              message = 'Successfully triggered track event.';
+            }
+            break;
+          case 'identify':
+            const traits = {};
+            for (let i = 0; i < attributeKeyElems.length; i++) {
+              if (attributeKeyElems[i].innerText && attributeValueElems[i].innerText) {
+                traits[attributeKeyElems[i]] = attributeValueElems[i];
+              }
+            }
+            if (!document.getElementById("userId").innerText) {
+              analytics.identify(traits);
+            } else {
+              analytics.identify(document.getElementById("userId").innerText, traits);
+            }
+            message = 'Successfully triggered identify event.';
+            break;
+          case 'alias':
+            if (!document.getElementById("userId").innerText) {
+              message = 'Error: Please input a user ID for alias.';
+            } else {
+              analytics.alias(document.getElementById("userId").innerText);
+              message = 'Successfully triggered alias event.';
+            }
+            break;
+          default:
+            break;
+        }
+
+        document.getElementById("submitMessage").innerText = message;
+      }
+    </script>
+  </body>
+</html>
