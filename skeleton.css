@@ -25,6 +25,14 @@
 - Media Queries
 */
 
+/* custom */
+.gradient-text {
+  background: -webkit-linear-gradient(left, red, blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+}
+
 
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
