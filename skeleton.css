@@ -27,10 +27,10 @@
 
 /* custom */
 .gradient-text {
-  background: -webkit-linear-gradient(left, red, blue);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-decoration: none;
+  background: -webkit-linear-gradient(left, red, blue) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-decoration: none !important;
 }
 
 
