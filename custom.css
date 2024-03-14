@@ -32,3 +32,16 @@
   -webkit-text-fill-color: transparent !important;
   text-decoration: none !important;
 }
+
+.billy-text {
+  color: #ED8C00;
+  font-family: Inter, -apple-system, "system-ui", "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif !important;
+  text-decoration: none !important;
+}
+
+.agency-text {
+  color: #a39b89;
+  background-color: black;
+  font-family: "EB Garamond", Garamond, serif !important;
+  text-decoration: none !important;
+}
