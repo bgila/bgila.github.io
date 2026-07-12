@@ -1,0 +1,12 @@
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+
+.home-link-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+}
