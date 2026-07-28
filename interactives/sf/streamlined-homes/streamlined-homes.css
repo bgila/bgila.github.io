@@ -282,13 +282,10 @@ a:hover { color: #3f28c4; }
   font-size: 13px;
   color: #777;
   margin-bottom: 4px;
-  max-height: 0;
   opacity: 0;
-  overflow: hidden;
-  transition: opacity 0.15s, max-height 0.15s;
+  transition: opacity 0.15s;
 }
 .sh-card:hover .neighborhood {
-  max-height: 20px;
   opacity: 1;
 }
 
@@ -322,14 +319,11 @@ a:hover { color: #3f28c4; }
   font-size: 12px;
   color: #999;
   text-decoration: none;
-  max-height: 0;
   opacity: 0;
-  overflow: hidden;
-  transition: opacity 0.15s, max-height 0.15s;
+  transition: opacity 0.15s;
   pointer-events: none;
 }
 .sh-card:hover .sh-card-feedback {
-  max-height: 20px;
   opacity: 1;
   pointer-events: auto;
 }
