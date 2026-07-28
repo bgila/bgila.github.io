@@ -1,5 +1,23 @@
 [
   {
+    "name": "2550 Irving St",
+    "address": "2550 Irving St",
+    "neighborhood": "Outer Sunset",
+    "lat": 37.7633924,
+    "lng": -122.4851814,
+    "units": 90,
+    "bmr": 90,
+    "market": 0,
+    "opened": "July 2026",
+    "note": "100% affordable; 22 units for families exiting homelessness, 15 for formerly homeless veterans. Developer: TNDC, architect: Pyatok. Flagged by a reader as missing from this map \u2014 thank you!",
+    "source": "https://sfyimby.com/2026/07/new-residents-finish-moving-into-affordable-housing-at-2550-irving-street-in-san-francisco.html",
+    "isOpen": true,
+    "image": "images/sb35-2550-irving.jpg",
+    "imageCredit": "Photo via TNDC, via San Francisco YIMBY",
+    "imageSource": "https://sfyimby.com/2026/07/new-residents-finish-moving-into-affordable-housing-at-2550-irving-street-in-san-francisco.html",
+    "id": "2550-irving-st"
+  },
+  {
     "name": "Casa Adelante \u2014 681 Florida St",
     "address": "681 Florida St",
     "neighborhood": "Mission",

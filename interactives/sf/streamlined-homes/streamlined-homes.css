@@ -305,6 +305,32 @@ a:hover { color: #3f28c4; }
 .pill.market { background: #eef1ff; color: #3f4db3; }
 .pill.bmr { background: #eafaf0; color: #1c8a52; }
 
+.sh-card-feedback {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #999;
+  text-decoration: none;
+}
+.sh-card-feedback:hover { color: #5B3DF5; }
+
+.sh-feedback-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  max-width: 1100px;
+  margin: 14px auto 0;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8f89ae;
+  text-decoration: none;
+}
+.sh-feedback-link:hover { color: #5B3DF5; }
+
 /* Full table section */
 .sh-table-section {
   max-width: 1200px;

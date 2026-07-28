@@ -72,6 +72,11 @@
     <div id="sh-map"></div>
   </div>
 
+  <a class="sh-feedback-link" href="mailto:barak.gila@gmail.com?subject=Inaccurate%20data%20on%20streamlined-homes%20map" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+    Inaccurate data? Let me know
+  </a>
+
   <div class="sh-cards" id="sh-cards"></div>
 
   <div class="sh-footer-note">
@@ -283,10 +288,10 @@
     });
     sb35Layer.addTo(map);
 
-    L.control.layers(null, {
-      'Under construction (11)': constructionLayer,
-      'Completed SB35 projects (17)': sb35Layer
-    }, { collapsed: true }).addTo(map);
+    var layerOptions = {};
+    layerOptions['Under construction (' + construction.length + ')'] = constructionLayer;
+    layerOptions['Completed SB35 projects (' + sb35.length + ')'] = sb35Layer;
+    L.control.layers(null, layerOptions, { collapsed: true }).addTo(map);
   }
 
   function renderCards(construction, sb35) {
@@ -317,7 +322,15 @@
         '<span class="pill market">' + fmtNum(p.market) + ' market</span>' +
         '<span class="pill bmr">' + fmtNum(p.bmr) + ' BMR</span>' +
         '</div>' +
+        '<a class="sh-card-feedback" href="mailto:barak.gila@gmail.com?subject=Inaccurate%20data%3A%20' + encodeURIComponent(p.name) + '" target="_blank" rel="noopener">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>' +
+        'Inaccurate data? Let me know' +
+        '</a>' +
         '</div>';
+
+      card.querySelector('.sh-card-feedback').addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
 
       card.addEventListener('click', function () {
         var entry = allMarkers[p.id];
