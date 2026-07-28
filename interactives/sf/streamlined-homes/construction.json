@@ -84,10 +84,10 @@
     "units": 3,
     "bmr": 0,
     "market": 3,
-    "image": null,
-    "imageCredit": null,
-    "imageSource": null,
-    "note": "No public rendering found for this small residential infill."
+    "image": "images/178-montana.jpg",
+    "imageCredit": "Current site photo, via San Francisco YIMBY",
+    "imageSource": "https://sfyimby.com/2024/02/permits-filed-for-178-montana-street-in-oceanview-san-francisco.html",
+    "note": "No architectural rendering has been published for this small residential infill; shown is the existing site."
   },
   {
     "id": "2021-003780PRJ",
@@ -114,10 +114,10 @@
     "units": 3,
     "bmr": 0,
     "market": 3,
-    "image": null,
-    "imageCredit": null,
-    "imageSource": null,
-    "note": "SB9 lot split; no public rendering found."
+    "image": "images/379-naples.jpg",
+    "imageCredit": "Illustration by SIA Consulting, via San Francisco YIMBY",
+    "imageSource": "https://sfyimby.com/2023/08/sb9-application-filed-for-379-naples-street-san-francisco.html",
+    "note": "SB9 lot split into three new homes plus the existing structure."
   },
   {
     "id": "2023-003263PRJ",

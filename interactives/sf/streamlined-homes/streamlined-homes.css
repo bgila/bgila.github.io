@@ -45,36 +45,82 @@ a:hover { color: #3f28c4; }
   margin: 10px 0 0;
 }
 
-/* Stats bar */
-.sh-stats {
+/* Hero stats: grouped totals with nested BMR / market-rate breakdown */
+.sh-hero-stats {
   max-width: 1100px;
-  margin: 18px auto 0;
+  margin: 20px auto 0;
   padding: 0 20px;
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 16px;
 }
 
-.sh-stat {
-  flex: 1 1 140px;
+.sh-hero-stat {
+  flex: 1 1 300px;
   background: #f4f2ff;
   border: 1px solid #e5e0ff;
-  border-radius: 10px;
-  padding: 14px 16px;
+  border-radius: 12px;
+  padding: 18px 20px 16px;
 }
 
-.sh-stat .num {
+.sh-hero-stat .hero-num {
   font-family: 'Raleway', sans-serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 38px;
   color: #4327c7;
   line-height: 1.1;
 }
 
-.sh-stat .lbl {
-  font-size: 12.5px;
+.sh-hero-stat .hero-lbl {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 4px;
+}
+
+.sh-hero-stat .hero-note {
+  font-weight: 400;
+  color: #888;
+}
+
+.sh-hero-stat .hero-subs {
+  margin-top: 12px;
+  padding-left: 4px;
+  border-top: 1px solid #e5e0ff;
+  padding-top: 10px;
+}
+
+.sh-hero-stat .hero-sub {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13.5px;
   color: #555;
-  margin-top: 3px;
+  padding: 3px 0 3px 14px;
+  position: relative;
+}
+
+.sh-hero-stat .hero-sub .connector {
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 8px;
+  border-top: 2px solid #cfc7f7;
+}
+
+.sh-hero-stat .sub-num {
+  font-weight: 700;
+  font-size: 15px;
+}
+.sh-hero-stat .sub-num.bmr { color: #1c8a52; }
+.sh-hero-stat .sub-num.market { color: #3f4db3; }
+
+.sh-pipeline-note {
+  max-width: 1100px;
+  margin: 10px auto 0;
+  padding: 0 20px;
+  font-size: 12.5px;
+  color: #888;
 }
 
 /* Map */

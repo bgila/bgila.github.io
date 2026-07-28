@@ -42,7 +42,8 @@
     <p class="sh-meta" id="sh-updated"></p>
   </div>
 
-  <div class="sh-stats" id="sh-stats"></div>
+  <div class="sh-hero-stats" id="sh-hero-stats"></div>
+  <p class="sh-pipeline-note" id="sh-pipeline-note"></p>
 
   <div class="sh-map-section">
     <div id="sh-map"></div>
@@ -113,11 +114,9 @@
     var sb35 = results[1];
     var full = results[2];
 
-    document.getElementById('sh-updated').textContent =
-      'Data compiled 2026-07-27 · ' + full.length + ' projects in the full pipeline · ' +
-      construction.length + ' currently under construction';
+    document.getElementById('sh-updated').textContent = 'Data compiled 2026-07-27';
 
-    renderStats(construction, full);
+    renderStats(construction, sb35, full);
     renderMap(construction, sb35);
     renderCards(construction);
     renderTable(full);
@@ -126,26 +125,55 @@
     document.getElementById('sh-map').textContent = 'Could not load data: ' + err;
   });
 
-  function renderStats(construction, full) {
-    var totalUnits = construction.reduce(function (s, p) { return s + (p.units || 0); }, 0);
-    var totalMarket = construction.reduce(function (s, p) { return s + (p.market || 0); }, 0);
-    var totalBmr = construction.reduce(function (s, p) { return s + (p.bmr || 0); }, 0);
+  function renderStats(construction, sb35, full) {
+    var opened = sb35.filter(function (p) { return p.isOpen; });
 
-    var stats = [
-      { num: construction.length, lbl: 'projects under construction' },
-      { num: fmtNum(totalUnits), lbl: 'total units under construction' },
-      { num: fmtNum(totalMarket), lbl: 'market-rate units' },
-      { num: fmtNum(totalBmr), lbl: 'below-market-rate (BMR) units' },
-      { num: full.length, lbl: 'projects in full pipeline' }
+    var openedUnits = opened.reduce(function (s, p) { return s + (p.units || 0); }, 0);
+    var openedBmr = opened.reduce(function (s, p) { return s + (p.bmr || 0); }, 0);
+    var openedMarket = opened.reduce(function (s, p) { return s + (p.market || 0); }, 0);
+
+    var underUnits = construction.reduce(function (s, p) { return s + (p.units || 0); }, 0);
+    var underBmr = construction.reduce(function (s, p) { return s + (p.bmr || 0); }, 0);
+    var underMarket = construction.reduce(function (s, p) { return s + (p.market || 0); }, 0);
+
+    var groups = [
+      {
+        num: openedUnits, lbl: 'total homes opened',
+        note: opened.length + ' earlier SB35 projects',
+        subs: [
+          { num: openedBmr, lbl: 'BMR homes', cls: 'bmr' },
+          { num: openedMarket, lbl: 'market-rate homes', cls: 'market' }
+        ]
+      },
+      {
+        num: underUnits, lbl: 'total homes under construction',
+        note: construction.length + ' projects',
+        subs: [
+          { num: underBmr, lbl: 'BMR homes', cls: 'bmr' },
+          { num: underMarket, lbl: 'market-rate homes', cls: 'market' }
+        ]
+      }
     ];
 
-    var wrap = document.getElementById('sh-stats');
-    stats.forEach(function (s) {
+    var wrap = document.getElementById('sh-hero-stats');
+    groups.forEach(function (g) {
       var div = document.createElement('div');
-      div.className = 'sh-stat';
-      div.innerHTML = '<div class="num">' + s.num + '</div><div class="lbl">' + s.lbl + '</div>';
+      div.className = 'sh-hero-stat';
+      div.innerHTML =
+        '<div class="hero-num">' + fmtNum(g.num) + '</div>' +
+        '<div class="hero-lbl">' + g.lbl + ' <span class="hero-note">(' + g.note + ')</span></div>' +
+        '<div class="hero-subs">' +
+        g.subs.map(function (s) {
+          return '<div class="hero-sub"><span class="connector"></span><span class="sub-num ' + s.cls + '">' + fmtNum(s.num) + '</span> ' + s.lbl + '</div>';
+        }).join('') +
+        '</div>';
       wrap.appendChild(div);
     });
+
+    var wholeNote = document.getElementById('sh-pipeline-note');
+    if (wholeNote) {
+      wholeNote.textContent = 'Across ' + full.length + ' projects in the full streamlined pipeline.';
+    }
   }
 
   var map, constructionMarkers = {};

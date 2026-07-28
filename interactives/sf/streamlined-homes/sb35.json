@@ -1,6 +1,6 @@
 [
   {
-    "name": "Casa Adelante — 681 Florida St",
+    "name": "Casa Adelante \u2014 681 Florida St",
     "address": "681 Florida St",
     "neighborhood": "Mission",
     "lat": 37.7608898,
@@ -10,7 +10,8 @@
     "market": 0,
     "opened": "2021",
     "note": "First SB35 project in SF; 130 units, 100% affordable, including 39 for formerly unhoused families.",
-    "source": "https://sfyimby.com/2023/06/affordable-housing-opens-at-681-florida-street-in-mission-district-san-francisco.html"
+    "source": "https://sfyimby.com/2023/06/affordable-housing-opens-at-681-florida-street-in-mission-district-san-francisco.html",
+    "isOpen": true
   },
   {
     "name": "266 4th St",
@@ -23,10 +24,11 @@
     "market": 0,
     "opened": "Status unclear from public sources (city-owned site, planned via RFP)",
     "note": "8-story, 100% affordable building on a city-owned parcel; studios to 2-bedroom units above ground-floor retail and amenity space.",
-    "source": "https://sfmohcd.org/266-4th-st-rfp"
+    "source": "https://sfmohcd.org/266-4th-st-rfp",
+    "isOpen": false
   },
   {
-    "name": "Casa de la Misión — 3001 24th St",
+    "name": "Casa de la Misi\u00f3n \u2014 3001 24th St",
     "address": "3001 24th St",
     "neighborhood": "Mission",
     "lat": 37.7524474,
@@ -36,10 +38,11 @@
     "market": 0,
     "opened": "September 2021",
     "note": "100% affordable senior housing for formerly homeless seniors.",
-    "source": "https://sfyimby.com/2021/09/3001-24th-street-opens-in-mission-district-san-francisco.html"
+    "source": "https://sfyimby.com/2021/09/3001-24th-street-opens-in-mission-district-san-francisco.html",
+    "isOpen": true
   },
   {
-    "name": "Casa Adelante — 2205 Mission St (Educator Housing)",
+    "name": "Casa Adelante \u2014 2205 Mission St (Educator Housing)",
     "address": "2205 Mission St",
     "neighborhood": "Mission",
     "lat": 37.761685,
@@ -49,10 +52,11 @@
     "market": 32,
     "opened": "Not yet built (in predevelopment financing as of early 2024)",
     "note": "9-story condo building; 32 of 64 units to be sold below market rate to SF educators.",
-    "source": "https://medasf.org/programs/community-real-estate/2205-mission-street/"
+    "source": "https://medasf.org/programs/community-real-estate/2205-mission-street/",
+    "isOpen": false
   },
   {
-    "name": "1064–1068 Mission St",
+    "name": "1064\u20131068 Mission St",
     "address": "1068 Mission St",
     "neighborhood": "South of Market",
     "lat": 37.7798416,
@@ -62,10 +66,11 @@
     "market": 0,
     "opened": "2024",
     "note": "SF's largest supportive housing development for formerly homeless seniors/adults; dual buildings from Mission to Stevenson St. Developed by Episcopal Community Services & Mercy Housing.",
-    "source": "https://ecs-sf.org/1064-1068-mission-street/"
+    "source": "https://ecs-sf.org/1064-1068-mission-street/",
+    "isOpen": true
   },
   {
-    "name": "Shirley Chisholm Village — 1351 42nd Ave",
+    "name": "Shirley Chisholm Village \u2014 1351 42nd Ave",
     "address": "1351 42nd Ave",
     "neighborhood": "Outer Sunset",
     "lat": 37.7615235,
@@ -75,7 +80,8 @@
     "market": 0,
     "opened": "September 2025",
     "note": "SF's first affordable educator housing; 134 units for SFUSD educators/staff plus 1 manager unit.",
-    "source": "https://localnewsmatters.org/2025/09/08/first-affordable-housing-earmarked-for-teachers-opens-in-sfs-sunset-district/"
+    "source": "https://localnewsmatters.org/2025/09/08/first-affordable-housing-earmarked-for-teachers-opens-in-sfs-sunset-district/",
+    "isOpen": true
   },
   {
     "name": "180 Jones St",
@@ -88,10 +94,11 @@
     "market": 0,
     "opened": "December 2024",
     "note": "100% affordable studios; 35 for adults exiting homelessness, 34 for low-income households. Developer: TNDC.",
-    "source": "https://sfyimby.com/2024/12/affordable-housing-inaugurated-at-180-jones-street-tenderloin-san-francisco.html"
+    "source": "https://sfyimby.com/2024/12/affordable-housing-inaugurated-at-180-jones-street-tenderloin-san-francisco.html",
+    "isOpen": true
   },
   {
-    "name": "The Kelsey Civic Center — 240 Van Ness Ave",
+    "name": "The Kelsey Civic Center \u2014 240 Van Ness Ave",
     "address": "240 Van Ness Ave",
     "neighborhood": "Civic Center",
     "lat": 37.7780046,
@@ -101,7 +108,8 @@
     "market": 0,
     "opened": "October 2025",
     "note": "100% affordable; a quarter of units set aside for people with disabilities. Joint venture of Mercy Housing & The Kelsey.",
-    "source": "https://sfyimby.com/2025/10/grand-opening-for-kelsey-civic-center-at-240-van-ness-avenue-san-francisco.html"
+    "source": "https://sfyimby.com/2025/10/grand-opening-for-kelsey-civic-center-at-240-van-ness-avenue-san-francisco.html",
+    "isOpen": true
   },
   {
     "name": "2530 18th St",
@@ -114,7 +122,8 @@
     "market": 0,
     "opened": "Not yet built (still in approvals as of late 2024)",
     "note": "100% affordable; ~50% of units for families exiting homelessness. Developer: Mercy Housing / Homeless Prenatal Program.",
-    "source": "https://sfyimby.com/2024/11/meeting-for-affordable-housing-2530-18th-street-mission-district-san-francisco.html"
+    "source": "https://sfyimby.com/2024/11/meeting-for-affordable-housing-2530-18th-street-mission-district-san-francisco.html",
+    "isOpen": false
   },
   {
     "name": "300 De Haro St",
@@ -127,7 +136,8 @@
     "market": 0,
     "opened": "Under construction (broke ground Aug 2025)",
     "note": "SF's largest affordable housing development in 5+ years; all-studio, 100% affordable for 30-70% AMI households.",
-    "source": "https://hoodline.com/2025/08/groundbreaking-ceremony-marks-start-of-san-francisco-s-largest-affordable-housing-development-in-5-years-at-300-de-haro-street/"
+    "source": "https://hoodline.com/2025/08/groundbreaking-ceremony-marks-start-of-san-francisco-s-largest-affordable-housing-development-in-5-years-at-300-de-haro-street/",
+    "isOpen": false
   },
   {
     "name": "383 6th Ave (Senior Housing)",
@@ -140,10 +150,11 @@
     "market": 0,
     "opened": "~2025 (housing lottery held late 2024)",
     "note": "100% affordable senior housing (15-50% AMI), including veterans and formerly unhoused seniors. Developer: TNDC. Listed address is close to the project's 383 6th Ave address.",
-    "source": "https://sfyimby.com/2024/11/senior-housing-lottery-due-soon-at-383-6th-avenue-richmond-district-san-francisco.html"
+    "source": "https://sfyimby.com/2024/11/senior-housing-lottery-due-soon-at-383-6th-avenue-richmond-district-san-francisco.html",
+    "isOpen": true
   },
   {
-    "name": "Hotel Diva conversion — 440 Geary St",
+    "name": "Hotel Diva conversion \u2014 440 Geary St",
     "address": "436 Geary St",
     "neighborhood": "Union Square / Tenderloin",
     "lat": 37.7873314,
@@ -153,7 +164,8 @@
     "market": 0,
     "opened": "October 2023",
     "note": "Former Hotel Diva converted to permanent supportive housing via Project Homekey; developer Episcopal Community Services. Listed address is close to the project's 440 Geary St address.",
-    "source": "https://www.sf.gov/news--san-francisco-opens-converted-hotel-122-homes-address-homelessness"
+    "source": "https://www.sf.gov/news--san-francisco-opens-converted-hotel-122-homes-address-homelessness",
+    "isOpen": true
   },
   {
     "name": "475 Minna St",
@@ -166,7 +178,8 @@
     "market": 12,
     "opened": "Status unclear from public sources",
     "note": "9-story, 15-unit residential building proposed with 20% on-site affordable units (above the 12% baseline requirement).",
-    "source": "https://commissions.sfplanning.org/cpcpackets/2014.1442DNXCUAVAR-475Minna.pdf"
+    "source": "https://commissions.sfplanning.org/cpcpackets/2014.1442DNXCUAVAR-475Minna.pdf",
+    "isOpen": false
   },
   {
     "name": "600 Seventh St",
@@ -179,7 +192,8 @@
     "market": 0,
     "opened": "December 2025",
     "note": "100% affordable for households up to 80% AMI plus formerly homeless families/adults. Developer: Mercy Housing.",
-    "source": "https://www.mercyhousing.org/2025/12/600-seventh-street-opens-in-san-francisco/"
+    "source": "https://www.mercyhousing.org/2025/12/600-seventh-street-opens-in-san-francisco/",
+    "isOpen": true
   },
   {
     "name": "730 Stanyan St",
@@ -192,7 +206,8 @@
     "market": 0,
     "opened": "2025",
     "note": "100% affordable, 25-80% AMI; 20 units for transitional-age youth, 12 for families exiting homelessness. Across from Golden Gate Park.",
-    "source": "https://www.730stanyan.org/"
+    "source": "https://www.730stanyan.org/",
+    "isOpen": true
   },
   {
     "name": "78 Haight St",
@@ -205,7 +220,8 @@
     "market": 0,
     "opened": "July 2026",
     "note": "100% affordable; half for transitional-age youth exiting homelessness, half for low-income families. Developer: TNDC.",
-    "source": "https://sfyimby.com/2026/07/affordable-housing-opens-at-78-haight-street-in-hayes-valley-san-francisco.html"
+    "source": "https://sfyimby.com/2026/07/affordable-housing-opens-at-78-haight-street-in-hayes-valley-san-francisco.html",
+    "isOpen": true
   },
   {
     "name": "833 Bryant St",
@@ -218,6 +234,7 @@
     "market": 0,
     "opened": "December 2021",
     "note": "Modular-construction supportive housing; entitled via SB35 in ~4 months. Partnership of Mercy Housing, Tipping Point & SF Accelerator Fund.",
-    "source": "https://sfyimby.com/2021/12/move-ins-start-for-permanent-supportive-housing-at-833-bryant-street-soma-san-francisco.html"
+    "source": "https://sfyimby.com/2021/12/move-ins-start-for-permanent-supportive-housing-at-833-bryant-street-soma-san-francisco.html",
+    "isOpen": true
   }
 ]
