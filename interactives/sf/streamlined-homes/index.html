@@ -67,7 +67,6 @@
   </div>
 
   <div class="sh-hero-stats" id="sh-hero-stats"></div>
-  <p class="sh-pipeline-note" id="sh-pipeline-note"></p>
 
   <div class="sh-map-section">
     <div id="sh-map"></div>
@@ -176,7 +175,9 @@
         subs: [
           { num: openedBmr, lbl: 'BMR homes', cls: 'bmr' },
           { num: openedMarket, lbl: 'market-rate homes', cls: 'market' }
-        ]
+        ],
+        sourceLabel: 'UC Berkeley Terner Center',
+        sourceUrl: 'https://ternercenter.berkeley.edu/research-and-policy/sb-35-evaluation/'
       },
       {
         num: underUnits, lbl: 'total homes under construction',
@@ -184,7 +185,9 @@
         subs: [
           { num: underBmr, lbl: 'BMR homes', cls: 'bmr' },
           { num: underMarket, lbl: 'market-rate homes', cls: 'market' }
-        ]
+        ],
+        sourceLabel: 'SF Planning',
+        sourceUrl: 'https://sfplanning.org/resource/streamlined-housing-dashboard'
       }
     ];
 
@@ -199,14 +202,10 @@
         g.subs.map(function (s) {
           return '<div class="hero-sub"><span class="connector"></span><span class="sub-num ' + s.cls + '">' + fmtNum(s.num) + '</span> ' + s.lbl + '</div>';
         }).join('') +
-        '</div>';
+        '</div>' +
+        '<div class="hero-source">source: <a href="' + g.sourceUrl + '" target="_blank" rel="noopener">' + g.sourceLabel + '</a></div>';
       wrap.appendChild(div);
     });
-
-    var wholeNote = document.getElementById('sh-pipeline-note');
-    if (wholeNote) {
-      wholeNote.textContent = 'Across ' + full.length + ' projects in the full streamlined pipeline.';
-    }
   }
 
   var map, allMarkers = {};
