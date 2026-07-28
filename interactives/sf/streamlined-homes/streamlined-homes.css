@@ -191,8 +191,6 @@ a:hover { color: #3f28c4; }
   height: 22px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
-.sh-marker-icon.construction { background: #5B3DF5; }
-.sh-marker-icon.sb35 { background: #1c8a52; }
 
 .leaflet-popup-content {
   margin: 10px 12px;
@@ -293,8 +291,28 @@ a:hover { color: #3f28c4; }
   font-size: 12.5px;
   font-weight: 600;
   color: #5B3DF5;
+  margin-bottom: 6px;
+}
+
+.sh-law-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
   margin-bottom: 8px;
 }
+
+.sh-law-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+.sh-law-badge:hover { text-decoration: underline; }
+
+.sh-popup .sh-law-badges { margin: 4px 0; }
 
 .sh-card .units-row {
   margin-top: auto;

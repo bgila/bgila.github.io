@@ -12,7 +12,10 @@
     "image": "images/1030-francisco.jpg",
     "imageCredit": "Rendering by Walker Warner Architects, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2025/02/preliminary-permits-for-1030-francisco-street-san-francisco.html",
-    "note": "Small single-family + ADU replacement project."
+    "note": "Small single-family + ADU replacement project.",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "id": "2024-006220PRJ",
@@ -27,7 +30,10 @@
     "image": null,
     "imageCredit": null,
     "imageSource": null,
-    "note": "No public rendering found for this small 2-unit infill."
+    "note": "No public rendering found for this small 2-unit infill.",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "id": "2025-004242PRJ",
@@ -42,11 +48,14 @@
     "image": "images/1015-van-ness.png",
     "imageCredit": "Elevations by Saida + Sullivan Design Partners, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2025/05/affordable-housing-conversion-planned-for-1035-van-ness-in-san-francisco.html",
-    "note": "Conversion of an existing residential building into 124 units of affordable permanent supportive housing for veterans (Swords to Plowshares)."
+    "note": "Conversion of an existing residential building into 124 units of affordable permanent supportive housing for veterans (Swords to Plowshares).",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "id": "2025-002304PRJ",
-    "name": "La Maravilla — 2970 16th St",
+    "name": "La Maravilla \u2014 2970 16th St",
     "address": "2970 16th St",
     "neighborhood": "Mission",
     "lat": 37.7652365,
@@ -57,11 +66,14 @@
     "image": "images/2970-16th.jpg",
     "imageCredit": "Rendering by HCLA and Mithun Design, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/05/construction-officially-starts-for-la-maravilla-in-mission-district-san-francisco.html",
-    "note": "Nine-story permanent supportive housing, first of three planned phases overlooking the 16th St BART plaza."
+    "note": "Nine-story permanent supportive housing, first of three planned phases overlooking the 16th St BART plaza.",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "id": "2024-010303PRJ",
-    "name": "Artists Hub on Market — 1687 Market St",
+    "name": "Artists Hub on Market \u2014 1687 Market St",
     "address": "1687 Market St",
     "neighborhood": "Mission",
     "lat": 37.7727692,
@@ -72,7 +84,10 @@
     "image": "images/1687-market.jpg",
     "imageCredit": "Rendering by Mark Cavagnero Associates, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/11/updated-plans-for-artists-hub-on-market-san-francisco.html",
-    "note": "17-story affordable housing tower with a ground-floor arts hub and theater; developed with Mercy Housing."
+    "note": "17-story affordable housing tower with a ground-floor arts hub and theater; developed with Mercy Housing.",
+    "laws": [
+      "ab2011"
+    ]
   },
   {
     "id": "2024-000848PRJ",
@@ -87,7 +102,10 @@
     "image": "images/178-montana.jpg",
     "imageCredit": "Current site photo, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/02/permits-filed-for-178-montana-street-in-oceanview-san-francisco.html",
-    "note": "No architectural rendering has been published for this small residential infill; shown is the existing site."
+    "note": "No architectural rendering has been published for this small residential infill; shown is the existing site.",
+    "laws": [
+      "sb9"
+    ]
   },
   {
     "id": "2021-003780PRJ",
@@ -102,7 +120,10 @@
     "image": null,
     "imageCredit": null,
     "imageSource": null,
-    "note": "No public rendering found for this small single-unit project."
+    "note": "No public rendering found for this small single-unit project.",
+    "laws": [
+      "sb9"
+    ]
   },
   {
     "id": "2023-007273PRJ",
@@ -117,7 +138,10 @@
     "image": "images/379-naples.jpg",
     "imageCredit": "Illustration by SIA Consulting, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2023/08/sb9-application-filed-for-379-naples-street-san-francisco.html",
-    "note": "SB9 lot split into three new homes plus the existing structure."
+    "note": "SB9 lot split into three new homes plus the existing structure.",
+    "laws": [
+      "sb9"
+    ]
   },
   {
     "id": "2023-003263PRJ",
@@ -132,7 +156,10 @@
     "image": "images/1515-south-van-ness.jpg",
     "imageCredit": "Rendering by David Baker Architects, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/01/concrete-nears-top-for-1515-south-van-ness-avenue-in-mission-district-san-francisco.html",
-    "note": "Nine-story affordable housing development; concrete structure nearing top-out as of Jan 2026."
+    "note": "Nine-story affordable housing development; concrete structure nearing top-out as of Jan 2026.",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "id": "2023-006512PRJ",
@@ -147,7 +174,10 @@
     "image": "images/3300-mission.jpg",
     "imageCredit": "Rendering by BAR Architects & Interiors, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/11/groundbreaking-ceremony-for-3300-mission-street-in-bernal-heights-san-francisco.html",
-    "note": "Adaptive reuse/rebuild of a fire-damaged building at Mission & 29th into 100% affordable housing."
+    "note": "Adaptive reuse/rebuild of a fire-damaged building at Mission & 29th into 100% affordable housing.",
+    "laws": [
+      "ab2011"
+    ]
   },
   {
     "id": "2023-009146PRJ",
@@ -162,6 +192,9 @@
     "image": "images/967-mission.jpg",
     "imageCredit": "Rendering by LMS Architects, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/03/construction-underway-for-967-mission-street-san-francisco.html",
-    "note": "Nine-story affordable senior housing, a quarter of units for formerly homeless seniors."
+    "note": "Nine-story affordable senior housing, a quarter of units for formerly homeless seniors.",
+    "laws": [
+      "sb35"
+    ]
   }
 ]

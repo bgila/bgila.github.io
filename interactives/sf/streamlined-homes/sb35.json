@@ -15,10 +15,13 @@
     "image": "images/sb35-921-howard.jpg",
     "imageCredit": "Rendering courtesy Perry Architects, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/08/affordable-housing-opens-at-921-howard-street-soma-san-francisco.html",
-    "id": "921-howard-st"
+    "id": "921-howard-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
-    "name": "Islais Place — 4840 Mission St",
+    "name": "Islais Place \u2014 4840 Mission St",
     "address": "4840 Mission St",
     "neighborhood": "Excelsior",
     "lat": 37.7207324,
@@ -33,10 +36,13 @@
     "image": "images/sb35-4840-mission.jpg",
     "imageCredit": "Photo by SF YIMBY",
     "imageSource": "https://sfyimby.com/2024/08/affordable-housing-wrapping-up-in-the-outer-mission-san-francisco.html",
-    "id": "4840-mission-st"
+    "id": "4840-mission-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
-    "name": "Kapuso at the Upper Yard — 2340 San Jose Ave",
+    "name": "Kapuso at the Upper Yard \u2014 2340 San Jose Ave",
     "address": "2340 San Jose Ave",
     "neighborhood": "Ingleside",
     "lat": 37.7211139,
@@ -51,7 +57,10 @@
     "image": "images/sb35-2340-san-jose.jpg",
     "imageCredit": "Aerial view, image via the Mayor's Office, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2023/10/affordable-housing-opens-by-balboa-park-bart-station-san-francisco.html",
-    "id": "2340-san-jose-ave"
+    "id": "2340-san-jose-ave",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "2550 Irving St",
@@ -69,7 +78,10 @@
     "image": "images/sb35-2550-irving.jpg",
     "imageCredit": "Photo via TNDC, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/07/new-residents-finish-moving-into-affordable-housing-at-2550-irving-street-in-san-francisco.html",
-    "id": "2550-irving-st"
+    "id": "2550-irving-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "Casa Adelante \u2014 681 Florida St",
@@ -87,7 +99,10 @@
     "image": "images/sb35-681-florida.jpg",
     "imageCredit": "Rendering by Mithun, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2023/06/affordable-housing-opens-at-681-florida-street-in-mission-district-san-francisco.html",
-    "id": "681-florida-st"
+    "id": "681-florida-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "266 4th St",
@@ -105,7 +120,10 @@
     "image": null,
     "imageCredit": null,
     "imageSource": null,
-    "id": "266-4th-st"
+    "id": "266-4th-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "Casa de la Misi\u00f3n \u2014 3001 24th St",
@@ -123,7 +141,10 @@
     "image": "images/sb35-3001-24th.jpg",
     "imageCredit": "Photo via Mercy Housing, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2021/09/3001-24th-street-opens-in-mission-district-san-francisco.html",
-    "id": "3001-24th-st"
+    "id": "3001-24th-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "Casa Adelante \u2014 2205 Mission St (Educator Housing)",
@@ -141,7 +162,10 @@
     "image": "images/sb35-2205-mission.jpg",
     "imageCredit": "Rendering by Gelfand Partners Architects, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2021/08/updated-design-for-2205-mission-street-mission-district-san-francisco.html",
-    "id": "2205-mission-st"
+    "id": "2205-mission-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "1064\u20131068 Mission St",
@@ -159,7 +183,10 @@
     "image": "images/sb35-1064-mission.jpg",
     "imageCredit": "Entrance photo, via Episcopal Community Services",
     "imageSource": "https://ecs-sf.org/1064-1068-mission-street/",
-    "id": "1068-mission-st"
+    "id": "1068-mission-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "Shirley Chisholm Village \u2014 1351 42nd Ave",
@@ -177,7 +204,10 @@
     "image": "images/sb35-1351-42nd.jpg",
     "imageCredit": "Photo by Alise Maripuu/Bay City News, via Local News Matters",
     "imageSource": "https://localnewsmatters.org/2025/09/08/first-affordable-housing-earmarked-for-teachers-opens-in-sfs-sunset-district/",
-    "id": "1351-42nd-ave"
+    "id": "1351-42nd-ave",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "180 Jones St",
@@ -195,7 +225,10 @@
     "image": "images/sb35-180-jones.jpg",
     "imageCredit": "Via Van Meter Williams Pollack, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/12/affordable-housing-inaugurated-at-180-jones-street-tenderloin-san-francisco.html",
-    "id": "180-jones-st"
+    "id": "180-jones-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "The Kelsey Civic Center \u2014 240 Van Ness Ave",
@@ -213,7 +246,10 @@
     "image": "images/sb35-240-van-ness.jpg",
     "imageCredit": "Photo by Bruce Damonte, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2025/10/grand-opening-for-kelsey-civic-center-at-240-van-ness-avenue-san-francisco.html",
-    "id": "240-van-ness-ave"
+    "id": "240-van-ness-ave",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "2530 18th St",
@@ -231,7 +267,10 @@
     "image": "images/sb35-2530-18th.jpg",
     "imageCredit": "Rendering by Mithun, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2023/07/renderings-for-affordable-housing-at-2530-18th-street-in-mission-district-san-francisco.html",
-    "id": "2530-18th-st"
+    "id": "2530-18th-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "300 De Haro St",
@@ -249,7 +288,10 @@
     "image": "images/sb35-300-de-haro.jpg",
     "imageCredit": "Construction progress photo by Andrew Campbell Nelson, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/01/foundation-progress-at-300-de-haro-street-san-francisco.html",
-    "id": "300-de-haro-st"
+    "id": "300-de-haro-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "383 6th Ave (Senior Housing)",
@@ -267,7 +309,10 @@
     "image": "images/sb35-383-6th.jpeg",
     "imageCredit": "Photo via TNDC, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2024/11/senior-housing-lottery-due-soon-at-383-6th-avenue-richmond-district-san-francisco.html",
-    "id": "375-6th-ave"
+    "id": "375-6th-ave",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "Hotel Diva conversion \u2014 440 Geary St",
@@ -285,7 +330,10 @@
     "image": null,
     "imageCredit": null,
     "imageSource": null,
-    "id": "436-geary-st"
+    "id": "436-geary-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "475 Minna St",
@@ -303,7 +351,10 @@
     "image": "images/sb35-475-minna.jpg",
     "imageCredit": "Rendering via Stanton Architecture",
     "imageSource": "https://www.stantonarchitecture.com/475-minna-street",
-    "id": "475-minna-st"
+    "id": "475-minna-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "600 Seventh St",
@@ -321,7 +372,10 @@
     "image": "images/sb35-600-seventh.jpg",
     "imageCredit": "Grand opening photo, via Mercy Housing",
     "imageSource": "https://www.mercyhousing.org/2025/12/600-seventh-street-opens-in-san-francisco/",
-    "id": "600-7th-st"
+    "id": "600-7th-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "730 Stanyan St",
@@ -339,7 +393,10 @@
     "image": "images/sb35-730-stanyan.jpg",
     "imageCredit": "Photo by Jason O'Rear, via 730stanyan.org",
     "imageSource": "https://www.730stanyan.org/",
-    "id": "730-stanyan-st"
+    "id": "730-stanyan-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "78 Haight St",
@@ -357,7 +414,10 @@
     "image": "images/sb35-78-haight.jpg",
     "imageCredit": "Photo by Brian Ashby, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2026/07/affordable-housing-opens-at-78-haight-street-in-hayes-valley-san-francisco.html",
-    "id": "78-haight-st"
+    "id": "78-haight-st",
+    "laws": [
+      "sb35"
+    ]
   },
   {
     "name": "833 Bryant St",
@@ -375,6 +435,30 @@
     "image": "images/sb35-833-bryant.jpg",
     "imageCredit": "Photo by Andrew Campbell Nelson, via San Francisco YIMBY",
     "imageSource": "https://sfyimby.com/2021/12/move-ins-start-for-permanent-supportive-housing-at-833-bryant-street-soma-san-francisco.html",
-    "id": "833-bryant-st"
+    "id": "833-bryant-st",
+    "laws": [
+      "sb35"
+    ]
+  },
+  {
+    "name": "191\u2013201 Gellert Dr",
+    "address": "191-201 Gellert Dr",
+    "neighborhood": "Lakeshore",
+    "lat": 37.730311,
+    "lng": -122.493079,
+    "units": 3,
+    "bmr": 0,
+    "market": 3,
+    "opened": "2024-2025",
+    "note": "SB9 lot split into two parcels, each with a new single-family home (one home built as a duplex). Developer/owner: James Keith; architect: Kotas/Pantaleoni.",
+    "source": "https://sfyimby.com/2022/04/sb9-boosted-plans-for-201-gellert-drive-in-lakeshore-san-francisco.html",
+    "isOpen": true,
+    "image": "images/sb9-gellert.jpg",
+    "imageCredit": "Rendering via KP Architects, via San Francisco YIMBY",
+    "imageSource": "https://sfyimby.com/2022/04/sb9-boosted-plans-for-201-gellert-drive-in-lakeshore-san-francisco.html",
+    "id": "191-201-gellert-dr",
+    "laws": [
+      "sb9"
+    ]
   }
 ]
