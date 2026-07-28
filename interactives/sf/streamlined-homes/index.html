@@ -81,9 +81,7 @@
 
   <div class="sh-footer-note">
     Map legend: pin color shows which state law streamlined each project —
-    <span style="color:#5B3DF5;">&#9679;</span> SB 35 / SB 423 &nbsp;&middot;&nbsp;
-    <span style="color:#e8792a;">&#9679;</span> AB 2011 &nbsp;&middot;&nbsp;
-    <span style="color:#0e9488;">&#9679;</span> SB 9. Click a project's law badge for details on that law.
+    <span id="sh-law-legend"></span>. Click a project's law badge for details on that law.
     Completed/tracked projects sourced from <a href="https://ternercenter.berkeley.edu/" target="_blank" rel="noopener">UC Berkeley Terner Center</a> and
     <a href="https://data.ca.gov/dataset/housing-element-annual-progress-report-apr-data-by-jurisdiction-and-year" target="_blank" rel="noopener">California HCD</a>'s project-level streamlining data.
     Toggle under-construction vs. completed layers with the control in the map's top-right corner.
@@ -185,6 +183,33 @@
     }).join('');
   }
 
+  // Populate the map-legend dots straight from LAWS so the colors there can
+  // never drift out of sync with the pins/badges that use the same object.
+  document.getElementById('sh-law-legend').innerHTML = Object.keys(LAWS).map(function (id) {
+    return '<span style="color:' + LAWS[id].color + ';">&#9679;</span> ' + LAWS[id].label;
+  }).join(' &nbsp;&middot;&nbsp; ');
+
+  // Shared popup pieces for map markers (construction & tracked/sb35 projects
+  // share the same image/credit/units layout; only the alt-text suffix, the
+  // no-credit fallback, and a few trailing sections differ between the two).
+  function popupHeader(p, imgAltSuffix) {
+    var imgHtml = p.image ? '<img src="' + p.image + '" alt="' + p.name + imgAltSuffix + '">' : '';
+    return '<div class="sh-popup">' + imgHtml +
+      '<h4>' + p.name + '</h4>' +
+      '<div class="sh-popup-meta">' + p.neighborhood + ' · ' + p.address + '</div>' +
+      '<div class="sh-law-badges">' + lawBadgesHtml(p) + '</div>';
+  }
+
+  function popupCredit(p, noCreditFallback) {
+    return p.imageCredit
+      ? '<div class="sh-popup-meta">' + (p.imageSource ? '<a href="' + p.imageSource + '" target="_blank" rel="noopener">' + p.imageCredit + '</a>' : p.imageCredit) + '</div>'
+      : noCreditFallback(p);
+  }
+
+  function popupUnits(p) {
+    return '<div class="sh-units"><b>' + fmtNum(p.market) + '</b> market-rate &nbsp; <b>' + fmtNum(p.bmr) + '</b> BMR &nbsp; (' + fmtNum(p.units) + ' total)</div>';
+  }
+
   Promise.all([
     fetch('construction.json').then(r => r.json()),
     fetch('sb35.json').then(r => r.json()),
@@ -281,54 +306,32 @@
       return iconCache[lawId];
     }
 
+    function addMarkers(list, layer, buildPopup) {
+      list.forEach(function (p) {
+        var marker = L.marker([p.lat, p.lng], { icon: iconForLaw(primaryLaw(p)) }).bindPopup(buildPopup(p), { maxWidth: 260 });
+        marker.addTo(layer);
+        allMarkers[p.id] = { marker: marker, layer: layer };
+      });
+    }
+
     var constructionLayer = L.layerGroup();
-    construction.forEach(function (p) {
-      var imgHtml = p.image
-        ? '<img src="' + p.image + '" alt="' + p.name + ' rendering">'
-        : '';
-      var creditHtml = p.imageCredit
-        ? '<div class="sh-popup-meta">' + (p.imageSource ? '<a href="' + p.imageSource + '" target="_blank" rel="noopener">' + p.imageCredit + '</a>' : p.imageCredit) + '</div>'
-        : '<div class="sh-popup-meta">' + (p.note || 'No public rendering found') + '</div>';
-
-      var popupHtml =
-        '<div class="sh-popup">' + imgHtml +
-        '<h4>' + p.name + '</h4>' +
-        '<div class="sh-popup-meta">' + p.neighborhood + ' · ' + p.address + '</div>' +
-        '<div class="sh-law-badges">' + lawBadgesHtml(p) + '</div>' +
-        creditHtml +
-        '<div class="sh-units"><b>' + fmtNum(p.market) + '</b> market-rate &nbsp; <b>' + fmtNum(p.bmr) + '</b> BMR &nbsp; (' + fmtNum(p.units) + ' total)</div>' +
+    addMarkers(construction, constructionLayer, function (p) {
+      return popupHeader(p, ' rendering') +
+        popupCredit(p, function (p) { return '<div class="sh-popup-meta">' + (p.note || 'No public rendering found') + '</div>'; }) +
+        popupUnits(p) +
         '</div>';
-
-      var marker = L.marker([p.lat, p.lng], { icon: iconForLaw(primaryLaw(p)) }).bindPopup(popupHtml, { maxWidth: 260 });
-      marker.addTo(constructionLayer);
-      allMarkers[p.id] = { marker: marker, layer: constructionLayer };
     });
     constructionLayer.addTo(map);
 
     var sb35Layer = L.layerGroup();
-    sb35.forEach(function (p) {
-      var imgHtml = p.image
-        ? '<img src="' + p.image + '" alt="' + p.name + '">'
-        : '';
-      var creditHtml = p.imageCredit
-        ? '<div class="sh-popup-meta">' + (p.imageSource ? '<a href="' + p.imageSource + '" target="_blank" rel="noopener">' + p.imageCredit + '</a>' : p.imageCredit) + '</div>'
-        : (p.image ? '' : '<div class="sh-popup-meta">No public image found</div>');
-
-      var popupHtml =
-        '<div class="sh-popup">' + imgHtml +
-        '<h4>' + p.name + '</h4>' +
-        '<div class="sh-popup-meta">' + p.neighborhood + ' · ' + p.address + '</div>' +
-        '<div class="sh-law-badges">' + lawBadgesHtml(p) + '</div>' +
-        creditHtml +
-        '<div class="sh-units"><b>' + fmtNum(p.market) + '</b> market-rate &nbsp; <b>' + fmtNum(p.bmr) + '</b> BMR &nbsp; (' + fmtNum(p.units) + ' total)</div>' +
+    addMarkers(sb35, sb35Layer, function (p) {
+      return popupHeader(p, '') +
+        popupCredit(p, function (p) { return p.image ? '' : '<div class="sh-popup-meta">No public image found</div>'; }) +
+        popupUnits(p) +
         '<div class="sh-popup-meta" style="margin-top:4px;">Opened: ' + p.opened + '</div>' +
         (p.note ? '<div class="sh-popup-meta">' + p.note + '</div>' : '') +
         (p.source ? '<div class="sh-popup-meta"><a href="' + p.source + '" target="_blank" rel="noopener">source</a></div>' : '') +
         '</div>';
-
-      var marker = L.marker([p.lat, p.lng], { icon: iconForLaw(primaryLaw(p)) }).bindPopup(popupHtml, { maxWidth: 260 });
-      marker.addTo(sb35Layer);
-      allMarkers[p.id] = { marker: marker, layer: sb35Layer };
     });
     sb35Layer.addTo(map);
 
@@ -373,11 +376,8 @@
         '</a>' +
         '</div>';
 
-      card.querySelector('.sh-card-feedback').addEventListener('click', function (e) {
-        e.stopPropagation();
-      });
-      card.querySelectorAll('.sh-law-badge').forEach(function (badge) {
-        badge.addEventListener('click', function (e) {
+      card.querySelectorAll('.sh-card-feedback, .sh-law-badge').forEach(function (el) {
+        el.addEventListener('click', function (e) {
           e.stopPropagation();
         });
       });
