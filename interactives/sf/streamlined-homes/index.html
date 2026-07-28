@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8B5PHBMN1G"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8B5PHBMN1G');
+  </script>
+
+  <meta charset="utf-8">
+  <title>Streamlined Housing in San Francisco — Barak Gila</title>
+  <meta name="description" content="An interactive look at San Francisco housing projects moving through the streamlined (SB35/SB423) approval pipeline, with a map of projects currently under construction.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/normalize.css">
+  <link rel="stylesheet" href="/skeleton.css">
+  <link rel="stylesheet" href="/custom.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="streamlined-homes.css">
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+</head>
+<body>
+
+  <div class="sh-header">
+    <a href="/" class="sh-back">&larr; barakgila.com</a>
+    <h1 class="sh-title">Streamlined Housing in San Francisco</h1>
+    <p class="sh-subtitle">
+      San Francisco's housing pipeline moving through streamlined state approval laws (SB35/SB423), from
+      preliminary filings through entitlement to construction. The map focuses on projects <strong>currently
+      under construction</strong>, with the latest available rendering and unit counts for each. The full
+      pipeline of 110 projects is in the table below.
+    </p>
+    <p class="sh-meta" id="sh-updated"></p>
+  </div>
+
+  <div class="sh-stats" id="sh-stats"></div>
+
+  <div class="sh-map-section">
+    <div id="sh-map"></div>
+  </div>
+
+  <div class="sh-cards" id="sh-cards"></div>
+
+  <div class="sh-footer-note">
+    Map legend: <span style="color:#5B3DF5;">&#9679;</span> currently under construction (from the pipeline dataset below) &nbsp;&middot;&nbsp;
+    <span style="color:#1c8a52;">&#9679;</span> earlier SB35-streamlined projects (completed or in progress, via a
+    <a href="https://ternercenter.berkeley.edu/" target="_blank" rel="noopener">Terner Center</a>-sourced list, coverage through ~2021 plus updates). Toggle layers with the control in the map's top-right corner.
+  </div>
+
+  <div class="sh-table-section">
+    <h2>Full streamlined housing pipeline</h2>
+    <p class="sh-table-desc">
+      All 110 projects in the dataset, from SB423 preliminary filings through planning-approved projects.
+      Search, filter, and sort to explore.
+    </p>
+    <div class="sh-controls">
+      <input type="text" id="sh-search" placeholder="Search project, address, or neighborhood…">
+      <select id="sh-filter-stage">
+        <option value="">All stages</option>
+      </select>
+      <span class="sh-count" id="sh-count"></span>
+    </div>
+    <div class="sh-table-wrap">
+      <table class="sh-table" id="sh-table">
+        <thead>
+          <tr>
+            <th data-key="name">Project<span class="arrow"></span></th>
+            <th data-key="neighborhood">Neighborhood<span class="arrow"></span></th>
+            <th data-key="stage">Stage<span class="arrow"></span></th>
+            <th data-key="units">Units<span class="arrow"></span></th>
+            <th data-key="bmr">BMR<span class="arrow"></span></th>
+            <th data-key="statusEn">Status<span class="arrow"></span></th>
+            <th data-key="fileDate">Filed<span class="arrow"></span></th>
+            <th data-key="entitledDate">Entitled<span class="arrow"></span></th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody id="sh-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sh-footer-note">
+    Data pulled from San Francisco Planning/DBI streamlined housing dashboards (source spreadsheet compiled 2026-07-27).
+    Renderings sourced from <a href="https://sfyimby.com" target="_blank" rel="noopener">San Francisco YIMBY</a> and credited to their respective architects; used here for informational, non-commercial purposes.
+    Addresses geocoded via OpenStreetMap Nominatim and are approximate.
+    Built by <a href="/">Barak Gila</a>.
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  function fmtNum(n) {
+    return (n === null || n === undefined) ? '—' : n.toLocaleString();
+  }
+
+  Promise.all([
+    fetch('construction.json').then(r => r.json()),
+    fetch('sb35.json').then(r => r.json()),
+    fetch('data.json').then(r => r.json())
+  ]).then(function (results) {
+    var construction = results[0];
+    var sb35 = results[1];
+    var full = results[2];
+
+    document.getElementById('sh-updated').textContent =
+      'Data compiled 2026-07-27 · ' + full.length + ' projects in the full pipeline · ' +
+      construction.length + ' currently under construction';
+
+    renderStats(construction, full);
+    renderMap(construction, sb35);
+    renderCards(construction);
+    renderTable(full);
+  }).catch(function (err) {
+    console.error(err);
+    document.getElementById('sh-map').textContent = 'Could not load data: ' + err;
+  });
+
+  function renderStats(construction, full) {
+    var totalUnits = construction.reduce(function (s, p) { return s + (p.units || 0); }, 0);
+    var totalMarket = construction.reduce(function (s, p) { return s + (p.market || 0); }, 0);
+    var totalBmr = construction.reduce(function (s, p) { return s + (p.bmr || 0); }, 0);
+
+    var stats = [
+      { num: construction.length, lbl: 'projects under construction' },
+      { num: fmtNum(totalUnits), lbl: 'total units under construction' },
+      { num: fmtNum(totalMarket), lbl: 'market-rate units' },
+      { num: fmtNum(totalBmr), lbl: 'below-market-rate (BMR) units' },
+      { num: full.length, lbl: 'projects in full pipeline' }
+    ];
+
+    var wrap = document.getElementById('sh-stats');
+    stats.forEach(function (s) {
+      var div = document.createElement('div');
+      div.className = 'sh-stat';
+      div.innerHTML = '<div class="num">' + s.num + '</div><div class="lbl">' + s.lbl + '</div>';
+      wrap.appendChild(div);
+    });
+  }
+
+  var map, constructionMarkers = {};
+
+  function renderMap(construction, sb35) {
+    map = L.map('sh-map', { scrollWheelZoom: false }).setView([37.7749, -122.4394], 12.5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var constructionIcon = L.divIcon({
+      className: '',
+      html: '<div class="sh-marker-icon"></div>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 20],
+      popupAnchor: [0, -18]
+    });
+
+    var constructionLayer = L.layerGroup();
+    construction.forEach(function (p) {
+      var imgHtml = p.image
+        ? '<img src="' + p.image + '" alt="' + p.name + ' rendering">'
+        : '';
+      var creditHtml = p.imageCredit
+        ? '<div class="sh-popup-meta">' + (p.imageSource ? '<a href="' + p.imageSource + '" target="_blank" rel="noopener">' + p.imageCredit + '</a>' : p.imageCredit) + '</div>'
+        : '<div class="sh-popup-meta">' + (p.note || 'No public rendering found') + '</div>';
+
+      var popupHtml =
+        '<div class="sh-popup">' + imgHtml +
+        '<h4>' + p.name + '</h4>' +
+        '<div class="sh-popup-meta">' + p.neighborhood + ' · ' + p.address + '</div>' +
+        creditHtml +
+        '<div class="sh-units"><b>' + fmtNum(p.market) + '</b> market-rate &nbsp; <b>' + fmtNum(p.bmr) + '</b> BMR &nbsp; (' + fmtNum(p.units) + ' total)</div>' +
+        '</div>';
+
+      var marker = L.marker([p.lat, p.lng], { icon: constructionIcon }).bindPopup(popupHtml, { maxWidth: 260 });
+      marker.addTo(constructionLayer);
+      constructionMarkers[p.id] = marker;
+    });
+    constructionLayer.addTo(map);
+
+    var sb35Layer = L.layerGroup();
+    sb35.forEach(function (p) {
+      var popupHtml =
+        '<div class="sh-popup">' +
+        '<h4>' + p.name + '</h4>' +
+        '<div class="sh-popup-meta">' + p.neighborhood + ' · ' + p.address + '</div>' +
+        '<div class="sh-units"><b>' + fmtNum(p.market) + '</b> market-rate &nbsp; <b>' + fmtNum(p.bmr) + '</b> BMR &nbsp; (' + fmtNum(p.units) + ' total)</div>' +
+        '<div class="sh-popup-meta" style="margin-top:4px;">Opened: ' + p.opened + '</div>' +
+        (p.note ? '<div class="sh-popup-meta">' + p.note + '</div>' : '') +
+        (p.source ? '<div class="sh-popup-meta"><a href="' + p.source + '" target="_blank" rel="noopener">source</a></div>' : '') +
+        '</div>';
+
+      var marker = L.circleMarker([p.lat, p.lng], {
+        radius: 7,
+        color: '#fff',
+        weight: 2,
+        fillColor: '#1c8a52',
+        fillOpacity: 0.9
+      }).bindPopup(popupHtml, { maxWidth: 260 });
+      marker.addTo(sb35Layer);
+    });
+    sb35Layer.addTo(map);
+
+    L.control.layers(null, {
+      'Under construction (11)': constructionLayer,
+      'Earlier SB35 projects (17)': sb35Layer
+    }, { collapsed: false }).addTo(map);
+  }
+
+  function renderCards(construction) {
+    var wrap = document.getElementById('sh-cards');
+    construction.forEach(function (p) {
+      var card = document.createElement('div');
+      card.className = 'sh-card';
+
+      var thumb = p.image
+        ? '<img class="thumb" src="' + p.image + '" alt="' + p.name + ' rendering">'
+        : '<div class="thumb placeholder">No public rendering available</div>';
+
+      card.innerHTML =
+        thumb +
+        '<div class="body">' +
+        '<h4>' + p.name + '</h4>' +
+        '<div class="neighborhood">' + p.neighborhood + '</div>' +
+        '<div class="units-row">' +
+        '<span class="pill market">' + fmtNum(p.market) + ' market</span>' +
+        '<span class="pill bmr">' + fmtNum(p.bmr) + ' BMR</span>' +
+        '</div>' +
+        '</div>';
+
+      card.addEventListener('click', function () {
+        var marker = constructionMarkers[p.id];
+        if (!marker) return;
+        map.setView([p.lat, p.lng], 16, { animate: true });
+        marker.openPopup();
+        document.getElementById('sh-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+
+      wrap.appendChild(card);
+    });
+  }
+
+  var tableData = [];
+  var sortKey = 'fileDate';
+  var sortDir = -1;
+
+  function renderTable(full) {
+    tableData = full;
+
+    var stages = Array.from(new Set(full.map(function (r) { return r.stage; }))).sort();
+    var sel = document.getElementById('sh-filter-stage');
+    stages.forEach(function (s) {
+      var opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      sel.appendChild(opt);
+    });
+
+    document.getElementById('sh-search').addEventListener('input', drawTable);
+    sel.addEventListener('change', drawTable);
+
+    document.querySelectorAll('#sh-table th[data-key]').forEach(function (th) {
+      th.addEventListener('click', function () {
+        var key = th.getAttribute('data-key');
+        if (sortKey === key) {
+          sortDir *= -1;
+        } else {
+          sortKey = key;
+          sortDir = 1;
+        }
+        drawTable();
+      });
+    });
+
+    drawTable();
+  }
+
+  function stageBadgeClass(stage) {
+    if (stage.indexOf('1 -') === 0) return 'stage1';
+    if (stage.indexOf('2 -') === 0) return 'stage2';
+    if (stage.indexOf('3 -') === 0) return 'stage3';
+    return '';
+  }
+
+  function drawTable() {
+    var q = document.getElementById('sh-search').value.trim().toLowerCase();
+    var stageFilter = document.getElementById('sh-filter-stage').value;
+
+    var rows = tableData.filter(function (r) {
+      if (stageFilter && r.stage !== stageFilter) return false;
+      if (!q) return true;
+      return (r.name + ' ' + r.address + ' ' + r.neighborhood).toLowerCase().indexOf(q) !== -1;
+    });
+
+    rows.sort(function (a, b) {
+      var av = a[sortKey], bv = b[sortKey];
+      if (av === null || av === undefined || av === '') av = sortDir === 1 ? '￿' : '';
+      if (bv === null || bv === undefined || bv === '') bv = sortDir === 1 ? '￿' : '';
+      if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
+      return String(av).localeCompare(String(bv)) * sortDir;
+    });
+
+    document.getElementById('sh-count').textContent = rows.length + ' of ' + tableData.length + ' projects';
+
+    document.querySelectorAll('#sh-table th[data-key]').forEach(function (th) {
+      var arrow = th.querySelector('.arrow');
+      arrow.textContent = th.getAttribute('data-key') === sortKey ? (sortDir === 1 ? '▲' : '▼') : '';
+    });
+
+    var tbody = document.getElementById('sh-tbody');
+    tbody.innerHTML = '';
+    rows.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="name">' + r.name + '</td>' +
+        '<td>' + (r.neighborhood || '—') + '</td>' +
+        '<td><span class="sh-badge ' + stageBadgeClass(r.stage) + '">' + r.stage.replace(/^\d+\s*-\s*/, '') + '</span></td>' +
+        '<td>' + fmtNum(r.units) + '</td>' +
+        '<td>' + fmtNum(r.bmr) + '</td>' +
+        '<td>' + (r.statusEn || '—') + '</td>' +
+        '<td>' + (r.fileDate || '—') + '</td>' +
+        '<td>' + (r.entitledDate || '—') + '</td>' +
+        '<td>' + (r.pimLink ? '<a href="' + r.pimLink + '" target="_blank" rel="noopener">PIM</a>' : '—') + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

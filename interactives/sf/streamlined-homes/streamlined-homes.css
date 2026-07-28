@@ -1,0 +1,313 @@
+/* Styles for /interactives/sf/streamlined-homes */
+
+body {
+  background: #fdfdfc;
+  color: #1c1c1c;
+}
+
+a { color: #5B3DF5; }
+a:hover { color: #3f28c4; }
+
+.sh-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 20px 10px;
+}
+
+.sh-back {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+.sh-back:hover { color: #5B3DF5; }
+
+.sh-title {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0 0 6px;
+}
+
+.sh-subtitle {
+  font-size: 16px;
+  color: #444;
+  max-width: 760px;
+  line-height: 1.5;
+  margin: 0 0 4px;
+}
+
+.sh-meta {
+  font-size: 12.5px;
+  color: #888;
+  margin: 10px 0 0;
+}
+
+/* Stats bar */
+.sh-stats {
+  max-width: 1100px;
+  margin: 18px auto 0;
+  padding: 0 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.sh-stat {
+  flex: 1 1 140px;
+  background: #f4f2ff;
+  border: 1px solid #e5e0ff;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.sh-stat .num {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: #4327c7;
+  line-height: 1.1;
+}
+
+.sh-stat .lbl {
+  font-size: 12.5px;
+  color: #555;
+  margin-top: 3px;
+}
+
+/* Map */
+.sh-map-section {
+  max-width: 1100px;
+  margin: 22px auto 0;
+  padding: 0 20px;
+}
+
+#sh-map {
+  width: 100%;
+  height: 460px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #eee;
+}
+
+.sh-marker-icon {
+  background: #5B3DF5;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  width: 22px;
+  height: 22px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px;
+  min-width: 220px;
+}
+
+.sh-popup img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.sh-popup h4 {
+  margin: 0 0 3px;
+  font-size: 14.5px;
+}
+
+.sh-popup .sh-popup-meta {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.sh-popup .sh-units {
+  font-size: 12.5px;
+  margin-top: 4px;
+}
+.sh-popup .sh-units b { color: #4327c7; }
+
+/* Card grid */
+.sh-cards {
+  max-width: 1100px;
+  margin: 20px auto 0;
+  padding: 0 20px 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.sh-card {
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.sh-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+.sh-card .thumb {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: #f1efff;
+}
+
+.sh-card .thumb.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a90e8;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px;
+}
+
+.sh-card .body {
+  padding: 10px 12px 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sh-card h4 {
+  font-size: 14.5px;
+  margin: 0 0 2px;
+}
+
+.sh-card .neighborhood {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.sh-card .units-row {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.sh-card .units-row .pill {
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-weight: 600;
+}
+.pill.market { background: #eef1ff; color: #3f4db3; }
+.pill.bmr { background: #eafaf0; color: #1c8a52; }
+
+/* Full table section */
+.sh-table-section {
+  max-width: 1200px;
+  margin: 46px auto 60px;
+  padding: 0 20px;
+}
+
+.sh-table-section h2 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+
+.sh-table-desc {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 16px;
+}
+
+.sh-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.sh-controls input[type="text"],
+.sh-controls select {
+  font-size: 14px;
+  padding: 7px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.sh-controls input[type="text"] {
+  flex: 1 1 220px;
+}
+
+.sh-table-wrap {
+  overflow: auto;
+  max-height: 640px;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+}
+
+table.sh-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  min-width: 920px;
+}
+
+table.sh-table th, table.sh-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+table.sh-table th {
+  background: #faf9ff;
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+  color: #333;
+}
+table.sh-table th:hover { color: #5B3DF5; }
+table.sh-table th .arrow { font-size: 10px; color: #aaa; margin-left: 3px; }
+
+table.sh-table td.name { white-space: normal; max-width: 240px; }
+table.sh-table tr:hover td { background: #faf9ff; }
+
+.sh-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+.sh-badge.stage1 { background: #fdf1e0; color: #a35d00; }
+.sh-badge.stage2 { background: #e6f0fd; color: #1a5aa8; }
+.sh-badge.stage3 { background: #e9f8ee; color: #1c8a52; }
+
+.sh-count {
+  font-size: 12.5px;
+  color: #777;
+  margin-left: auto;
+  align-self: center;
+}
+
+.sh-footer-note {
+  max-width: 1100px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+  font-size: 12px;
+  color: #999;
+}
+
+@media (max-width: 640px) {
+  .sh-title { font-size: 24px; }
+  #sh-map { height: 340px; }
+}
