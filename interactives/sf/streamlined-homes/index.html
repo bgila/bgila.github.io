@@ -64,11 +64,19 @@
       Search, filter, and sort to explore.
     </p>
     <div class="sh-controls">
-      <input type="text" id="sh-search" placeholder="Search project, address, or neighborhood…">
-      <select id="sh-filter-stage">
-        <option value="">All stages</option>
-      </select>
-      <span class="sh-count" id="sh-count"></span>
+      <div class="sh-controls-row">
+        <input type="text" id="sh-search" placeholder="Search project, address, or neighborhood…">
+        <button type="button" id="sh-export" class="sh-export-btn" title="Download the filtered table as CSV">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>
+          Export
+        </button>
+      </div>
+      <div class="sh-controls-row">
+        <select id="sh-filter-stage">
+          <option value="">All stages</option>
+        </select>
+        <span class="sh-count" id="sh-count"></span>
+      </div>
     </div>
     <div class="sh-table-wrap">
       <table class="sh-table" id="sh-table">
@@ -280,6 +288,7 @@
   }
 
   var tableData = [];
+  var currentRows = [];
   var sortKey = 'fileDate';
   var sortDir = -1;
 
@@ -311,6 +320,8 @@
       });
     });
 
+    document.getElementById('sh-export').addEventListener('click', exportCsv);
+
     drawTable();
   }
 
@@ -339,6 +350,8 @@
       return String(av).localeCompare(String(bv)) * sortDir;
     });
 
+    currentRows = rows;
+
     document.getElementById('sh-count').textContent = rows.length + ' of ' + tableData.length + ' projects';
 
     document.querySelectorAll('#sh-table th[data-key]').forEach(function (th) {
@@ -362,6 +375,38 @@
         '<td>' + (r.pimLink ? '<a href="' + r.pimLink + '" target="_blank" rel="noopener">PIM</a>' : '—') + '</td>';
       tbody.appendChild(tr);
     });
+  }
+
+  function csvCell(v) {
+    var s = (v === null || v === undefined) ? '' : String(v);
+    if (/[",\n]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function exportCsv() {
+    var cols = [
+      ['id', 'Record ID'], ['name', 'Project'], ['address', 'Address'],
+      ['neighborhood', 'Neighborhood'], ['stage', 'Stage'], ['units', 'Units'],
+      ['bmr', 'BMR'], ['market', 'Market-rate'], ['statusEn', 'Status'],
+      ['fileDate', 'Filed'], ['entitledDate', 'Entitled'], ['statusDate', 'Status date'],
+      ['constructionStarted', 'Construction started'], ['openToPublic', 'Open to public'],
+      ['pimLink', 'PIM link']
+    ];
+
+    var lines = [cols.map(function (c) { return csvCell(c[1]); }).join(',')];
+    currentRows.forEach(function (r) {
+      lines.push(cols.map(function (c) { return csvCell(r[c[0]]); }).join(','));
+    });
+
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'sf-streamlined-housing.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 })();
 </script>

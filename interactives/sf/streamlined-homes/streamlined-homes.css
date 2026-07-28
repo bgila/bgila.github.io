@@ -273,9 +273,16 @@ a:hover { color: #3f28c4; }
 
 .sh-controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 14px;
+}
+
+.sh-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 
 .sh-controls input[type="text"],
@@ -285,6 +292,30 @@ a:hover { color: #3f28c4; }
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
+}
+
+.sh-controls input[type="text"] {
+  flex: 1 1 220px;
+}
+
+.sh-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border: 1px solid #5B3DF5;
+  border-radius: 6px;
+  background: #fff;
+  color: #5B3DF5;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sh-export-btn:hover {
+  background: #5B3DF5;
+  color: #fff;
 }
 
 .sh-controls input[type="text"] {
