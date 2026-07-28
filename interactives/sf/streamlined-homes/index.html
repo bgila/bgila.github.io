@@ -32,22 +32,38 @@
 
   <div class="sh-header">
     <a href="/" class="sh-back">&larr; barakgila.com</a>
-    <h1 class="sh-title">Streamlined Housing in San Francisco</h1>
-    <p class="sh-subtitle">
-      San Francisco's housing pipeline moving through California's streamlined state approval laws. SB 35
-      (Sen. Scott Wiener with policy aide Annie Fryman, effective January 2018) lets housing projects skip
-      discretionary review in cities falling short of their state housing targets. SB 828 (Wiener &amp; Fryman,
-      effective January 2019) rewrote how those targets are calculated, pushing San Francisco's assigned goal to
-      82,069 homes and making it far likelier the city would miss the threshold that triggers SB 35. SB 423
-      (Wiener &amp; Asm. Buffy Wicks, effective January 2024) extended SB 35's sunset to 2036 and added an
-      SF-specific rule reassessing the city's progress every year instead of every four.
-    </p>
-    <p class="sh-subtitle">
-      The map shows projects that have <strong>already opened</strong> under SB35, alongside projects
-      <strong>currently under construction</strong>, with the latest available rendering and unit counts for
-      each. The full pipeline of 110 projects is in the table below.
-    </p>
-    <p class="sh-meta" id="sh-updated"></p>
+    <div class="sh-header-flex">
+      <div class="sh-header-text">
+        <h1 class="sh-title">Streamlined Housing in San Francisco</h1>
+        <p class="sh-subtitle">
+          San Francisco's housing pipeline moving through California's streamlined state approval laws:
+        </p>
+        <ul class="sh-law-list">
+          <li><strong>SB 35</strong> (Sen. Scott Wiener with policy aide Annie Fryman, effective January 2018)
+            lets housing projects skip discretionary review in cities falling short of their state housing
+            targets.</li>
+          <li><strong>SB 828</strong> (Wiener &amp; Fryman, effective January 2019) rewrote how those targets are
+            calculated, pushing San Francisco's assigned goal to 82,069 homes and making it far likelier the city
+            would miss the threshold that triggers SB 35.</li>
+          <li><strong>SB 423</strong> (Wiener &amp; Asm. Buffy Wicks, effective January 2024) extended SB 35's
+            sunset to 2036 and added an SF-specific rule reassessing the city's progress every year instead of
+            every four.</li>
+        </ul>
+        <p class="sh-subtitle">
+          Scott Wiener is a <a href="https://barak.substack.com/p/scott-wiener-is-the-progressive-for" target="_blank" rel="noopener">progressive housing champion</a>
+          currently running to replace Nancy Pelosi in Congress.
+        </p>
+        <p class="sh-subtitle">
+          The map shows projects that have <strong>already opened</strong> under SB35, alongside projects
+          <strong>currently under construction</strong>, with the latest available rendering and unit counts for
+          each. The full pipeline of 110 projects is in the table below.
+        </p>
+        <p class="sh-meta" id="sh-updated"></p>
+      </div>
+      <a class="sh-header-image-link" href="https://barakgila.com/scott-delivers/" target="_blank" rel="noopener">
+        <img class="sh-header-image" src="/scott-delivers/scott-wiener-delivers.png" alt="Scott Wiener gets things done — flyer">
+      </a>
+    </div>
   </div>
 
   <div class="sh-hero-stats" id="sh-hero-stats"></div>
@@ -199,7 +215,7 @@
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
     }).addTo(map);
 
     var constructionIcon = L.divIcon({

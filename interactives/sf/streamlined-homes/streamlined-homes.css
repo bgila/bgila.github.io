@@ -9,7 +9,7 @@ a { color: #5B3DF5; }
 a:hover { color: #3f28c4; }
 
 .sh-header {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 28px 20px 10px;
 }
@@ -24,6 +24,36 @@ a:hover { color: #3f28c4; }
 }
 .sh-back:hover { color: #5B3DF5; }
 
+.sh-header-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.sh-header-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sh-header-image-link {
+  flex: 0 0 200px;
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.sh-header-image-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.sh-header-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .sh-title {
   font-family: 'Raleway', sans-serif;
   font-weight: 700;
@@ -37,6 +67,21 @@ a:hover { color: #3f28c4; }
   max-width: 760px;
   line-height: 1.5;
   margin: 0 0 4px;
+}
+
+.sh-law-list {
+  font-size: 16px;
+  color: #444;
+  max-width: 760px;
+  line-height: 1.5;
+  margin: 6px 0 10px;
+  padding-left: 20px;
+}
+.sh-law-list li {
+  margin-bottom: 8px;
+}
+.sh-law-list li:last-child {
+  margin-bottom: 0;
 }
 
 .sh-meta {
@@ -388,4 +433,11 @@ table.sh-table tr:hover td { background: #faf9ff; }
 @media (max-width: 640px) {
   .sh-title { font-size: 24px; }
   #sh-map { height: 340px; }
+  .sh-header-flex { flex-direction: column-reverse; }
+  .sh-header-image-link { flex-basis: auto; width: 160px; }
+}
+
+/* Leaflet layer-control toggle labels, enlarged for legibility */
+.leaflet-control-layers-overlays label {
+  font-size: 15px;
 }
