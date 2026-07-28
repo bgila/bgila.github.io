@@ -150,7 +150,7 @@
 
     renderStats(construction, sb35, full);
     renderMap(construction, sb35);
-    renderCards(construction);
+    renderCards(construction, sb35);
     renderTable(full);
   }).catch(function (err) {
     console.error(err);
@@ -208,7 +208,7 @@
     }
   }
 
-  var map, constructionMarkers = {};
+  var map, allMarkers = {};
 
   function renderMap(construction, sb35) {
     map = L.map('sh-map', { scrollWheelZoom: false }).setView([37.7749, -122.4394], 12.5);
@@ -253,7 +253,7 @@
 
       var marker = L.marker([p.lat, p.lng], { icon: constructionIcon }).bindPopup(popupHtml, { maxWidth: 260 });
       marker.addTo(constructionLayer);
-      constructionMarkers[p.id] = marker;
+      allMarkers[p.id] = { marker: marker, layer: constructionLayer };
     });
     constructionLayer.addTo(map);
 
@@ -279,30 +279,40 @@
 
       var marker = L.marker([p.lat, p.lng], { icon: sb35Icon }).bindPopup(popupHtml, { maxWidth: 260 });
       marker.addTo(sb35Layer);
+      allMarkers[p.id] = { marker: marker, layer: sb35Layer };
     });
     sb35Layer.addTo(map);
 
     L.control.layers(null, {
       'Under construction (11)': constructionLayer,
       'Completed SB35 projects (17)': sb35Layer
-    }, { collapsed: false }).addTo(map);
+    }, { collapsed: true }).addTo(map);
   }
 
-  function renderCards(construction) {
+  function renderCards(construction, sb35) {
     var wrap = document.getElementById('sh-cards');
-    construction.forEach(function (p) {
+
+    var cards = construction.map(function (p) {
+      return { p: p, statusLabel: 'Under construction' };
+    }).concat(sb35.map(function (p) {
+      return { p: p, statusLabel: p.isOpen ? ('Opened ' + p.opened) : p.opened };
+    }));
+
+    cards.forEach(function (item) {
+      var p = item.p;
       var card = document.createElement('div');
       card.className = 'sh-card';
 
       var thumb = p.image
-        ? '<img class="thumb" src="' + p.image + '" alt="' + p.name + ' rendering">'
-        : '<div class="thumb placeholder">No public rendering available</div>';
+        ? '<img class="thumb" src="' + p.image + '" alt="' + p.name + '">'
+        : '<div class="thumb placeholder">No public image available</div>';
 
       card.innerHTML =
         thumb +
         '<div class="body">' +
         '<h4>' + p.name + '</h4>' +
         '<div class="neighborhood">' + p.neighborhood + '</div>' +
+        '<div class="status-label">' + item.statusLabel + '</div>' +
         '<div class="units-row">' +
         '<span class="pill market">' + fmtNum(p.market) + ' market</span>' +
         '<span class="pill bmr">' + fmtNum(p.bmr) + ' BMR</span>' +
@@ -310,10 +320,11 @@
         '</div>';
 
       card.addEventListener('click', function () {
-        var marker = constructionMarkers[p.id];
-        if (!marker) return;
+        var entry = allMarkers[p.id];
+        if (!entry) return;
+        if (!map.hasLayer(entry.layer)) map.addLayer(entry.layer);
         map.setView([p.lat, p.lng], 16, { animate: true });
-        marker.openPopup();
+        entry.marker.openPopup();
         document.getElementById('sh-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
 
