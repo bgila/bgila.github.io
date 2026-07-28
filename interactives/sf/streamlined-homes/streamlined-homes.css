@@ -139,7 +139,6 @@ a:hover { color: #3f28c4; }
 }
 
 .sh-marker-icon {
-  background: #5B3DF5;
   border: 2px solid #fff;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
@@ -147,6 +146,8 @@ a:hover { color: #3f28c4; }
   height: 22px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
+.sh-marker-icon.construction { background: #5B3DF5; }
+.sh-marker-icon.sb35 { background: #1c8a52; }
 
 .leaflet-popup-content {
   margin: 10px 12px;
