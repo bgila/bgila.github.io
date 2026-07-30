@@ -1,0 +1,37 @@
+{
+  "methodology": {
+    "source_assessed_values": "DataSF: Assessor Historical Secured Property Tax Rolls (wv5m-vpq2), closed_roll_year=2025",
+    "source_url": "https://data.sfgov.org/Housing-and-Buildings/Assessor-Historical-Secured-Property-Tax-Rolls/wv5m-vpq2",
+    "scope": "Citywide, Single Family Residential (includes individually-deeded condos)",
+    "market_value_estimation": "Comps are identified by detecting actual reassessment events in 2020-2025 multi-year assessor history, not just a recorded sale date: Prop 13 caps the ordinary annual inflation adjustment at ~2%/yr, so any parcel whose total assessed value jumps >=8% year-over-year, with a recorded sale date within a year of that jump (allowing for the ~1yr lag between a sale and its reassessment appearing on the roll), is treated as a confirmed market reset -- its post-jump assessed value is used as a real price-per-sqft signal. This catches non-arms-length transfers (e.g. Prop 19 parent-child/trust transfers, or batch administrative recordings) that have a sale date but no real value reset, which a naive 'has a recent sale date' filter would wrongly include. For each target home, the 7 nearest confirmed comps by location (same neighborhood if it has 12+, else citywide) set the estimate: median $/sqft x subject sqft. Known weak point: still undershoots at the very top of the market (large/luxury homes), since nearest-neighbor $/sqft blends in typical nearby homes rather than modeling a price tier.",
+    "tax_assumptions": {
+      "current_general_rate_pct": 1.0,
+      "sf_bond_rate_pct": 0.18,
+      "proposed_general_rate_pct": 0.65
+    },
+    "generated": "2026-07-30"
+  },
+  "counts": {
+    "total_parcels": 155059,
+    "jump_confirmed_comps": 16614,
+    "neighborhoods": 92,
+    "estimated_rows_written": 153756
+  },
+  "stats": {
+    "subsidy_vs_market_today": {
+      "p10": -1845,
+      "median": 6468,
+      "mean": 7757,
+      "p90": 19292,
+      "p99": 40557,
+      "min": -400128,
+      "max": 346246
+    },
+    "under_reform": {
+      "would_pay_more": 88896,
+      "would_pay_less": 64860,
+      "pct_pay_more": 57.8,
+      "pct_pay_less": 42.2
+    }
+  }
+}
