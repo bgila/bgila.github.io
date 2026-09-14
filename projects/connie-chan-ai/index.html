@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8B5PHBMN1G"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8B5PHBMN1G');
+  </script>
+
+  <meta charset="utf-8">
+  <title>Connie Chan is using LLMs to run her campaign — Barak Gila</title>
+  <meta name="description" content="Every email Connie Chan's CA-11 campaign sent between August 19 and September 14, 2026, scored with Pangram 4.0's AI-text detector. 11 of 19 carry AI-generated content; 6 are wholly AI.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="/normalize.css">
+  <link rel="stylesheet" href="/skeleton.css">
+  <link rel="stylesheet" href="/custom.css">
+  <link rel="stylesheet" href="connie-chan-ai.css">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+</head>
+<body>
+
+<div class="cc-root">
+
+  <a class="cc-back" href="/projects/">&larr; projects</a>
+
+  <h1 class="cc-title">Connie Chan is using LLMs to run her campaign</h1>
+
+  <p class="cc-dek">
+    Connie Chan has criticized her opponent Scott Wiener, who wrote California's AI regulation law,
+    <a href="https://sd11.senate.ca.gov/news/senator-wieners-landmark-responsible-ai-innovation-bill-advances-final-vote" target="_blank" rel="noopener">SB 53 (2025)</a>,
+    for using AI as part of his campaign. Meanwhile, she's been sending her supporters 100% AI slop.
+    Between August 19 and September 14, 2026, Connie Chan’s CA&#8209;11 campaign sent 19 emails to
+    folks who signed up on her campaign. Pangram 4.0 finds generated content in 11 of them &mdash;
+    and reads 6 as machine-written end to end.
+  </p>
+
+  <div class="cc-stats" id="cc-stats"></div>
+
+  <div class="cc-figure">
+    <p class="cc-figure-title">How the 19 emails split</p>
+    <p class="cc-figure-sub">Segments Pangram scored as AI-generated, as a share of each email.</p>
+    <div class="cc-dist" id="cc-dist"></div>
+    <div class="cc-legend" id="cc-legend"></div>
+  </div>
+
+  <div class="cc-controls">
+    <button class="cc-chip" data-filter="all" aria-pressed="true">All</button>
+    <button class="cc-chip" data-filter="Human" aria-pressed="false">Human</button>
+    <button class="cc-chip" data-filter="Mixed" aria-pressed="false">Mixed</button>
+    <button class="cc-chip" data-filter="AI" aria-pressed="false">AI</button>
+    <span class="cc-count" id="cc-count"></span>
+  </div>
+
+  <div class="cc-table-wrap">
+    <table class="cc-table">
+      <thead>
+        <tr>
+          <th class="cc-sortable" data-sort="date" aria-sort="descending">Date <span class="cc-arrow">▾</span></th>
+          <th class="cc-sortable" data-sort="subject">Subject <span class="cc-arrow">▾</span></th>
+          <th class="cc-sortable cc-words" data-sort="words">Words <span class="cc-arrow">▾</span></th>
+          <th class="cc-sortable" data-sort="verdict">Verdict <span class="cc-arrow">▾</span></th>
+          <th class="cc-sortable" data-sort="fraction_ai">Fraction AI <span class="cc-arrow">▾</span></th>
+          <th>Verify</th>
+        </tr>
+      </thead>
+      <tbody id="cc-rows"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var VERDICTS = ['Human', 'Mixed', 'AI'];
+  var LABEL = {
+    Human: 'No AI content',
+    Mixed: 'Partly AI',
+    AI: 'Entirely AI'
+  };
+
+  var state = { data: null, filter: 'all', sort: 'date', dir: -1 };
+
+  fetch('data.json')
+    .then(function (r) { return r.json(); })
+    .then(function (d) { state.data = d; render(); })
+    .catch(function () {
+      document.getElementById('cc-rows').innerHTML =
+        '<tr><td colspan="6">Could not load data.json &mdash; this page needs to be served over http, not opened as a file.</td></tr>';
+    });
+
+  function fmtDate(iso) {
+    var p = iso.split('-');
+    var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1] - 1];
+    return m + ' ' + (+p[2]);
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function render() {
+    var d = state.data, s = d.summary;
+
+    var pctAny = Math.round(s.any_ai / s.n * 100);
+    var pctAll = Math.round(s.all_ai / s.n * 100);
+    document.getElementById('cc-stats').innerHTML = [
+      stat(pctAny + '%', 'of emails contain AI-generated text<br>(' + s.any_ai + ' of ' + s.n + ')'),
+      stat(pctAll + '%', 'are AI-generated end to end<br>(' + s.all_ai + ' of ' + s.n + ')')
+    ].join('');
+
+    // distribution bar: one stacked bar, segments sized by count
+    var dist = '', legend = '';
+    VERDICTS.forEach(function (v) {
+      var n = s.counts[v];
+      if (!n) return;
+      dist += '<div class="cc-dist-seg" data-v="' + v + '" style="flex:' + n + '" ' +
+              'title="' + v + ' — ' + n + ' of ' + s.n + ' emails"></div>';
+      legend += '<span class="cc-legend-item"><span class="cc-swatch" data-v="' + v + '"></span>' +
+                v + ' — ' + n + ' email' + (n === 1 ? '' : 's') +
+                ' <span style="color:var(--text-muted)">(' + LABEL[v] + ')</span></span>';
+    });
+    document.getElementById('cc-dist').innerHTML = dist;
+    document.getElementById('cc-legend').innerHTML = legend;
+
+    renderRows();
+  }
+
+  function stat(value, label) {
+    return '<div class="cc-stat"><div class="cc-stat-value">' + value +
+           '</div><div class="cc-stat-label">' + label + '</div></div>';
+  }
+
+  function renderRows() {
+    var rows = state.data.emails.slice();
+    if (state.filter !== 'all') {
+      rows = rows.filter(function (e) { return e.verdict === state.filter; });
+    }
+    var key = state.sort, dir = state.dir;
+    var order = { Human: 0, Mixed: 1, AI: 2 };
+    rows.sort(function (a, b) {
+      var x = key === 'verdict' ? order[a.verdict] : a[key];
+      var y = key === 'verdict' ? order[b.verdict] : b[key];
+      if (typeof x === 'string') { x = x.toLowerCase(); y = y.toLowerCase(); }
+      return x < y ? -dir : x > y ? dir : 0;
+    });
+
+    document.getElementById('cc-count').textContent =
+      rows.length + ' of ' + state.data.emails.length + ' emails';
+
+    document.getElementById('cc-rows').innerHTML = rows.map(function (e) {
+      var pct = Math.round(e.fraction_ai * 100);
+      return '<tr id="e' + e.date + '">' +
+        '<td class="cc-date">' + fmtDate(e.date) + '</td>' +
+        '<td class="cc-subject"><a href="' + esc(e.html) + '">' + esc(e.subject) + '</a>' +
+          '<span class="cc-sender">' + esc(e.sender) + '</span></td>' +
+        '<td class="cc-words">' + e.words + '</td>' +
+        '<td class="cc-verdict"><span class="cc-verdict-inner">' +
+          '<span class="cc-swatch" data-v="' + e.verdict + '"></span>' + e.verdict +
+        '</span></td>' +
+        '<td class="cc-meter"><div class="cc-meter-row">' +
+          '<span class="cc-track"><span class="cc-fill" data-v="' + e.verdict +
+            '" style="width:' + pct + '%"></span></span>' +
+          '<span class="cc-pct">' + pct + '%</span>' +
+        '</div></td>' +
+        '<td><button class="cc-copy" data-date="' + e.date + '">Copy scored text</button></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  document.addEventListener('click', function (ev) {
+    var chip = ev.target.closest('.cc-chip');
+    if (chip) {
+      state.filter = chip.dataset.filter;
+      document.querySelectorAll('.cc-chip').forEach(function (c) {
+        c.setAttribute('aria-pressed', String(c === chip));
+      });
+      renderRows();
+      return;
+    }
+
+    var th = ev.target.closest('th.cc-sortable');
+    if (th) {
+      var k = th.dataset.sort;
+      state.dir = state.sort === k ? -state.dir : (k === 'date' || k === 'fraction_ai' || k === 'words' ? -1 : 1);
+      state.sort = k;
+      document.querySelectorAll('th.cc-sortable').forEach(function (h) {
+        h.removeAttribute('aria-sort');
+        h.querySelector('.cc-arrow').textContent = '▾';
+      });
+      th.setAttribute('aria-sort', state.dir === 1 ? 'ascending' : 'descending');
+      th.querySelector('.cc-arrow').textContent = state.dir === 1 ? '▴' : '▾';
+      renderRows();
+      return;
+    }
+
+    var btn = ev.target.closest('.cc-copy');
+    if (btn) {
+      var row = state.data.emails.find(function (e) { return e.date === btn.dataset.date; });
+      if (!row) return;
+      navigator.clipboard.writeText(row.text).then(function () {
+        var was = btn.textContent;
+        btn.textContent = 'Copied — paste into Pangram';
+        setTimeout(function () { btn.textContent = was; }, 2200);
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
