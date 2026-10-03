@@ -81,7 +81,9 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
+  box-sizing: border-box;
   height: auto;
+  margin: 0;
   padding: 14px 4px;
   border-top: 1px solid #f0f0f0;
   border-radius: 0;
@@ -101,7 +103,7 @@ body {
   font-size: 18px;
   font-weight: 600;
 }
-.cta-card .cta-row:first-of-type { border-top: none; }
+.cta-card h3 + .cta-row { border-top: none; }
 
 .cta-row:hover { color: #5B3DF5; }
 .cta-row:hover .cta-icon { color: #5B3DF5; }
