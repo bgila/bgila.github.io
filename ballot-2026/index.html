@@ -144,8 +144,11 @@
     .summary { color: var(--ink2); font-size: 14px; margin: 0 0 10px; }
     details { font-size: 13.5px; color: var(--ink2); margin: -4px 0 10px; }
     details summary { cursor: pointer; color: var(--ink3); font-size: 12.5px; font-weight: 600; }
-    details p { margin: 8px 0 0; }
-    details b { color: var(--ink); }
+    details .yn-text { margin-top: 8px; }
+    details p { margin: 0 0 8px; }
+    details ul { margin: 0 0 8px; padding-left: 20px; }
+    details li { margin: 0 0 2px; }
+    details strong { color: var(--ink); }
     .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .yn button {
       border: 1.5px solid var(--rule); background: #fff; border-radius: 10px;
@@ -199,6 +202,17 @@
     }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+    .sway {
+      display: flex; align-items: center; gap: 18px; text-decoration: none;
+      background: var(--card); border: 1px solid var(--rule); border-radius: 16px;
+      padding: 18px; margin: 0 0 24px; color: #2a1130;
+    }
+    .sway:hover { border-color: #c9bfd0; }
+    .sway img { flex: none; width: 96px; height: auto; }
+    .sway-head { font-weight: 700; font-size: 16px; }
+    .sway-link { font-size: 14px; color: var(--ink2); margin-top: 2px; }
+    .sway:hover .sway-link { text-decoration: underline; }
+    @media (max-width: 520px) { .sway { flex-direction: column; align-items: flex-start; gap: 12px; } }
     footer { color: var(--ink3); font-size: 12px; padding: 8px 0 24px; }
 
     @media (max-width: 520px) {
@@ -232,15 +246,15 @@
   <section class="wrap">
     <div class="entry" id="enter">
       <h2>Enter the contest</h2>
-      <p>Submitting opens an email to Barak with your picks. Most correct predictions wins.</p>
+      <p>Submitting opens an email to Barak with your picks. Whoever makes the greatest number of correct predictions (unweighted) wins $100 or $200 to the charity of their choice. If there are ties, you all win but the prize gets split.</p>
       <div class="row2">
         <div>
           <label for="f-name">Your name</label>
-          <input id="f-name" autocomplete="name" placeholder="Name">
+          <input id="f-name" autocomplete="name" placeholder="Saikat Chakrabarti">
         </div>
         <div>
-          <label for="f-handle">Email or social handle (optional)</label>
-          <input id="f-handle" autocomplete="email" placeholder="So we can reach you">
+          <label for="f-handle">Social handle (optional)</label>
+          <input id="f-handle" autocomplete="off" autocapitalize="off" placeholder="saikatc">
         </div>
       </div>
       <label for="f-note">Tiebreaker or hot take (optional)</label>
@@ -248,6 +262,16 @@
       <button class="btn-submit" id="submit2">Submit to prediction contest</button>
       <p class="fine">Email not opening? <button id="copy">Copy your picks</button> and send them to barak.gila@gmail.com.</p>
     </div>
+  </section>
+
+  <section class="wrap">
+    <a class="sway" href="https://sway.co/barak" target="_blank" rel="noopener">
+      <img src="sway-wordmark.svg" alt="Sway" width="96" height="29">
+      <div>
+        <div class="sway-head">I wish this were sponsored by Sway</div>
+        <div class="sway-link">Regardless of what <em>will</em> happen, here's what <em>should</em> happen! &rarr;</div>
+      </div>
+    </a>
   </section>
 
   <footer class="wrap">Ballot data and photos from CivicEngine and Ballotpedia. Picks are saved in this browser.</footer>
@@ -303,8 +327,8 @@
         if (it.summary) html += '<p class="summary">' + esc(it.summary) + '</p>';
         if (it.pro || it.con) {
           html += '<details><summary>What yes and no mean</summary>' +
-            (it.pro ? '<p><b>Yes:</b> ' + esc(it.pro) + '</p>' : '') +
-            (it.con ? '<p><b>No:</b> ' + esc(it.con) + '</p>' : '') + '</details>';
+            // pro/con are pre-sanitized HTML (simple formatting tags only) from build.py
+            '<div class="yn-text">' + (it.pro || '') + (it.con || '') + '</div></details>';
         }
         html += '<div class="yn"><button class="yes" data-v="Yes">' + (it.title ? 'Passes' : 'Yes') + '</button><button class="no" data-v="No">' + (it.title ? 'Fails' : 'No') + '</button></div>';
       } else {
@@ -442,7 +466,7 @@
       var name = document.getElementById('f-name').value.trim();
       var handle = document.getElementById('f-handle').value.trim();
       var note = document.getElementById('f-note').value.trim();
-      return 'Name: ' + (name || '') + (handle ? '\nContact: ' + handle : '') + (note ? '\nTiebreaker / hot take: ' + note : '') +
+      return 'Name: ' + (name || '') + (handle ? '\nHandle: ' + handle : '') + (note ? '\nTiebreaker / hot take: ' + note : '') +
         '\n\nMy SF ballot predictions for Nov 3, 2026 (' + items.filter(isDone).length + '/' + items.length + ' picked):\n' + pickText() +
         '\n\nMake your own: https://barakgila.com/ballot-2026\n';
     }
@@ -466,7 +490,7 @@
     document.getElementById('copy').addEventListener('click', function () {
       var text = entryText();
       (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
-        function () { toast('Copied. Paste into an email to ' + EMAIL); },
+        function () { toast('Copied'); },
         function () { prompt('Copy your picks:', text); }
       );
     });
