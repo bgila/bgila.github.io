@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8B5PHBMN1G"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8B5PHBMN1G');
+  </script>
+
+  <meta charset="utf-8">
+  <title>Predict the SF Ballot — Barak Gila</title>
+  <meta name="description" content="Who wins in San Francisco on November 3, 2026? Make your picks for every race and measure and enter the prediction contest.">
+  <meta name="author" content="Barak Gila">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Predict the SF Ballot">
+  <meta property="og:description" content="Who wins in San Francisco on November 3, 2026? Make your picks and enter the prediction contest.">
+  <meta property="og:url" content="https://barakgila.com/ballot-2026/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #ffffff;
+      --ink: #1b1d21;
+      --ink2: #5d626b;
+      --ink3: #9097a1;
+      --rule: #e3ded3;
+      --accent: #c2410c;
+      --pick: #14532d;
+      --pick-bg: #e8f3ec;
+      --dem: #1d4ed8;
+      --rep: #b91c1c;
+      --yes: #15803d;
+      --no: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 96px;
+    }
+    a { color: inherit; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+    /* Masthead */
+    header { padding: 28px 0 8px; }
+    .back { font-size: 13px; color: var(--ink2); text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    .eyebrow {
+      margin: 22px 0 6px;
+      font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    h1 {
+      font-family: Fraunces, Georgia, serif; font-weight: 900;
+      font-size: clamp(36px, 9vw, 60px); line-height: .98; letter-spacing: -.02em;
+      margin: 0 0 12px;
+    }
+    .lede { font-size: 17px; color: var(--ink2); margin: 0 0 18px; max-width: 34em; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .btn {
+      border: 1.5px solid var(--ink); background: transparent; border-radius: 999px;
+      padding: 9px 16px; font-weight: 600; font-size: 14px; line-height: 1;
+    }
+    .btn:hover { background: rgba(0,0,0,.05); }
+    .btn-d { background: var(--dem); border-color: var(--dem); color: #fff; }
+    .btn-d:hover { background: #1e40af; }
+    .btn-ghost { border-color: transparent; color: var(--ink2); padding-left: 8px; padding-right: 8px; }
+
+    /* Section nav */
+    nav.jump {
+      position: sticky; top: 0; z-index: 5;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule);
+      margin-top: 22px;
+    }
+    nav.jump .wrap { display: flex; gap: 6px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; scrollbar-width: none; }
+    nav.jump .wrap::-webkit-scrollbar { display: none; }
+    nav.jump a {
+      flex: none; text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 6px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--rule); color: var(--ink2);
+    }
+    nav.jump a .n { color: var(--ink3); font-weight: 500; margin-left: 4px; }
+    nav.jump a.done { color: var(--pick); border-color: #b9d8c4; background: var(--pick-bg); }
+
+    h2 {
+      font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 24px;
+      margin: 34px 0 12px; scroll-margin-top: 64px;
+    }
+
+    /* Ballot item cards */
+    .item {
+      background: var(--card); border: 1px solid var(--rule); border-radius: 14px;
+      padding: 14px 14px 12px; margin-bottom: 12px;
+    }
+    .item.complete { border-color: #b9d8c4; }
+    .item-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+    .item-name { font-weight: 700; font-size: 16px; margin: 0; }
+    .item-meta { font-size: 12px; color: var(--ink3); white-space: nowrap; }
+    .item-meta .check { color: var(--pick); font-weight: 700; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin: -4px 0 10px; }
+    .tag { font-size: 11px; font-weight: 600; color: var(--ink2); background: #f1efe9; border-radius: 4px; padding: 2px 6px; }
+
+    .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+    .choice {
+      display: flex; align-items: center; gap: 10px; text-align: left;
+      border: 1.5px solid var(--rule); background: #fff; border-radius: 10px;
+      padding: 8px 10px 8px 8px; min-height: 60px; position: relative;
+      transition: border-color .12s, background .12s;
+    }
+    .choice:hover { border-color: #c9c2b3; }
+    .choice.on { border-color: var(--pick); background: var(--pick-bg); }
+    .choice.on::after {
+      content: "✓"; position: absolute; top: 6px; right: 8px;
+      font-size: 13px; font-weight: 700; color: var(--pick);
+    }
+    .avatar {
+      flex: none; width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
+      background: #e7e2d7; display: grid; place-items: center;
+      font-size: 14px; font-weight: 700; color: #8a8273;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+    .cname { font-weight: 600; font-size: 14px; line-height: 1.2; padding-right: 14px; }
+    .csub { display: flex; gap: 6px; align-items: center; margin-top: 3px; font-size: 11.5px; color: var(--ink3); }
+    .party { font-weight: 700; font-size: 10.5px; border-radius: 3px; padding: 1px 5px; color: #fff; }
+    .party.D { background: var(--dem); }
+    .party.R { background: var(--rep); }
+
+    .measure-title { font-weight: 600; font-size: 14.5px; margin: -6px 0 3px; }
+    .summary { color: var(--ink2); font-size: 14px; margin: 0 0 10px; }
+    details { font-size: 13.5px; color: var(--ink2); margin: -4px 0 10px; }
+    details summary { cursor: pointer; color: var(--ink3); font-size: 12.5px; font-weight: 600; }
+    details p { margin: 8px 0 0; }
+    details b { color: var(--ink); }
+    .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .yn button {
+      border: 1.5px solid var(--rule); background: #fff; border-radius: 10px;
+      padding: 9px 10px; font-weight: 700; font-size: 14px;
+    }
+    .yn button:hover { border-color: #c9c2b3; }
+    .yn button.on.yes { border-color: var(--yes); background: #e8f5ec; color: var(--yes); }
+    .yn button.on.no { border-color: var(--no); background: #fbecea; color: var(--no); }
+
+    /* Entry form */
+    .entry {
+      background: var(--ink); color: #f4f1ea; border-radius: 16px; padding: 20px 18px; margin: 36px 0 24px;
+    }
+    .entry h2 { color: #fff; margin: 0 0 6px; }
+    .entry p { margin: 0 0 14px; color: #c9c5bb; font-size: 14px; }
+    .entry label { display: block; font-size: 12px; font-weight: 600; color: #c9c5bb; margin: 10px 0 4px; }
+    .entry input, .entry textarea {
+      width: 100%; border: 0; border-radius: 8px; padding: 11px 12px; font: inherit; font-size: 16px;
+      background: #2c2f35; color: #fff;
+    }
+    .entry textarea { min-height: 60px; resize: vertical; }
+    .entry .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .entry .btn-submit { margin-top: 16px; width: 100%; }
+    .entry .fine { font-size: 12px; color: #8f8b82; margin: 10px 0 0; }
+    .entry .fine button { background: none; border: 0; padding: 0; text-decoration: underline; color: inherit; font-size: inherit; }
+
+    /* Bottom bar */
+    .bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+      background: rgba(255,255,255,.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--rule);
+      padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+    }
+    .bar .wrap { display: flex; align-items: center; gap: 12px; }
+    .progress { flex: 1; min-width: 0; }
+    .progress .label { font-size: 13px; font-weight: 600; }
+    .progress .label span { color: var(--ink3); font-weight: 500; }
+    .meter { height: 6px; background: #ece7dc; border-radius: 3px; overflow: hidden; margin-top: 5px; }
+    .meter i { display: block; height: 100%; width: 0; background: var(--pick); transition: width .25s; }
+    .btn-submit {
+      flex: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff;
+      padding: 12px 18px; font-weight: 700; font-size: 14px;
+    }
+    .btn-submit:hover { background: #9a3412; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 20px); opacity: 0;
+      background: var(--ink); color: #fff; font-size: 14px; font-weight: 500;
+      padding: 10px 16px; border-radius: 999px; pointer-events: none; transition: all .2s; z-index: 20;
+      max-width: calc(100% - 32px); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    footer { color: var(--ink3); font-size: 12px; padding: 8px 0 24px; }
+
+    @media (max-width: 520px) {
+      .choices { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .choice { flex-direction: column; text-align: center; gap: 6px; padding: 10px 6px; }
+      .cname { padding-right: 0; font-size: 13.5px; }
+      .csub { justify-content: center; }
+      .avatar { width: 56px; height: 56px; }
+      .entry .row2 { grid-template-columns: 1fr; gap: 0; }
+      .btn-submit { padding: 12px 14px; }
+      .progress .label span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="wrap">
+    <a class="back" href="/projects">&larr; barakgila.com/projects</a>
+    <div class="eyebrow">San Francisco · November 3, 2026</div>
+    <h1>Predict the SF&nbsp;Ballot</h1>
+    <p class="lede">Not who you're voting for: who you think will <em>win</em>. Pick every race and measure, then enter the prediction contest.</p>
+    <div class="actions">
+      <button class="btn btn-d" id="love-d">I love the D</button>
+      <a class="btn" href="#enter" style="text-decoration:none">Jump to submit</a>
+      <button class="btn btn-ghost" id="clear">Clear picks</button>
+    </div>
+  </header>
+
+  <nav class="jump"><div class="wrap" id="jump"></div></nav>
+
+  <main class="wrap" id="ballot"></main>
+
+  <section class="wrap">
+    <div class="entry" id="enter">
+      <h2>Enter the contest</h2>
+      <p>Submitting opens an email to Barak with your picks. Most correct predictions wins.</p>
+      <div class="row2">
+        <div>
+          <label for="f-name">Your name</label>
+          <input id="f-name" autocomplete="name" placeholder="Name">
+        </div>
+        <div>
+          <label for="f-handle">Email or social handle (optional)</label>
+          <input id="f-handle" autocomplete="email" placeholder="So we can reach you">
+        </div>
+      </div>
+      <label for="f-note">Tiebreaker or hot take (optional)</label>
+      <textarea id="f-note" placeholder="e.g. turnout will be 62%"></textarea>
+      <button class="btn-submit" id="submit2">Submit to prediction contest</button>
+      <p class="fine">Email not opening? <button id="copy">Copy your picks</button> and send them to barak.gila@gmail.com.</p>
+    </div>
+  </section>
+
+  <footer class="wrap">Ballot data and photos from CivicEngine and Ballotpedia. Picks are saved in this browser.</footer>
+
+  <div class="bar">
+    <div class="wrap">
+      <div class="progress">
+        <div class="label" id="progress-label"></div>
+        <div class="meter"><i id="meter"></i></div>
+      </div>
+      <button class="btn-submit" id="submit">Submit picks</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script>
+  (function () {
+    var EMAIL = 'barak.gila@gmail.com';
+    var KEY = 'ballot-2026-picks';
+    var items = window.BALLOT;
+    var picks = {};
+    try { picks = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+
+    // Uncontested races are decided already.
+    items.forEach(function (it) {
+      if (it.kind === 'race' && it.choices.length <= it.seats) picks[it.id] = it.choices.map(function (c) { return c.name; });
+    });
+
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {} }
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function initials(n) { return n.replace(/"[^"]*"/g, '').split(/\s+/).filter(Boolean).map(function (w) { return w[0]; }).filter(function (c) { return /[A-Z]/.test(c); }).slice(0, 2).join(''); }
+    function isDone(it) { var p = picks[it.id]; return it.kind === 'yesno' ? !!p : !!p && p.length === Math.min(it.seats, it.choices.length); }
+
+    // Render
+    var sections = [];
+    var html = '';
+    items.forEach(function (it) {
+      if (sections.indexOf(it.section) < 0) {
+        sections.push(it.section);
+        html += '<h2 id="s-' + sections.length + '">' + esc(it.section) + '</h2>';
+      }
+      html += '<div class="item" id="' + it.id + '"><div class="item-head"><h3 class="item-name">' + esc(it.name) + '</h3><span class="item-meta"></span></div>';
+      var tags = [];
+      if (it.district) tags.push('Only part of SF votes');
+      if (it.rcv) tags.push('Ranked choice');
+      if (it.kind === 'race' && it.choices.length <= it.seats) tags.push('Unopposed');
+      if (tags.length) html += '<div class="tags">' + tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div>';
+
+      if (it.kind === 'yesno') {
+        if (it.title) html += '<p class="measure-title">' + esc(it.title) + '</p>';
+        if (it.summary) html += '<p class="summary">' + esc(it.summary) + '</p>';
+        if (it.pro || it.con) {
+          html += '<details><summary>What yes and no mean</summary>' +
+            (it.pro ? '<p><b>Yes:</b> ' + esc(it.pro) + '</p>' : '') +
+            (it.con ? '<p><b>No:</b> ' + esc(it.con) + '</p>' : '') + '</details>';
+        }
+        html += '<div class="yn"><button class="yes" data-v="Yes">' + (it.title ? 'Passes' : 'Yes') + '</button><button class="no" data-v="No">' + (it.title ? 'Fails' : 'No') + '</button></div>';
+      } else {
+        html += '<div class="choices">' + it.choices.map(function (c) {
+          var av = c.img ? '<img loading="lazy" src="img/' + c.img + '.jpg" alt="">' : initials(c.name);
+          var sub = (c.party ? '<span class="party ' + c.party + '">' + (c.party === 'D' ? 'Dem' : 'Rep') + '</span>' : '') + (c.inc ? '<span>Incumbent</span>' : '');
+          return '<button class="choice" data-v="' + esc(c.name) + '"><span class="avatar">' + av + '</span><span><div class="cname">' + esc(c.name) + '</div>' + (sub ? '<div class="csub">' + sub + '</div>' : '') + '</span></button>';
+        }).join('') + '</div>';
+      }
+      html += '</div>';
+    });
+    document.getElementById('ballot').innerHTML = html;
+
+    var byId = {};
+    items.forEach(function (it) { byId[it.id] = it; });
+
+    function paintItem(it) {
+      var el = document.getElementById(it.id);
+      var p = picks[it.id];
+      el.querySelectorAll('[data-v]').forEach(function (b) {
+        var v = b.getAttribute('data-v');
+        b.classList.toggle('on', it.kind === 'yesno' ? p === v : !!p && p.indexOf(v) >= 0);
+      });
+      var done = isDone(it);
+      el.classList.toggle('complete', done);
+      var meta = el.querySelector('.item-meta');
+      if (it.kind === 'race' && it.seats > 1) {
+        meta.innerHTML = done ? '<span class="check">✓ ' + it.seats + ' picked</span>' : 'Pick ' + it.seats + ' winners' + (p && p.length ? ' · ' + p.length + '/' + it.seats : '');
+      } else {
+        meta.innerHTML = done ? '<span class="check">✓</span>' : '';
+      }
+    }
+
+    function paintProgress() {
+      var done = items.filter(isDone).length;
+      document.getElementById('progress-label').innerHTML = done + ' of ' + items.length + ' picked' + (done === items.length ? ' 🎉' : ' <span>· picks save automatically</span>');
+      document.getElementById('meter').style.width = (100 * done / items.length) + '%';
+      document.getElementById('jump').innerHTML = sections.map(function (s, i) {
+        var its = items.filter(function (it) { return it.section === s; });
+        var d = its.filter(isDone).length;
+        return '<a href="#s-' + (i + 1) + '" class="' + (d === its.length ? 'done' : '') + '">' + esc(s) + '<span class="n">' + d + '/' + its.length + '</span></a>';
+      }).join('');
+    }
+
+    function paintAll() { items.forEach(paintItem); paintProgress(); }
+
+    var toastTimer;
+    function toast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2400);
+    }
+
+    document.getElementById('ballot').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-v]');
+      if (!b) return;
+      var it = byId[b.closest('.item').id];
+      var v = b.getAttribute('data-v');
+      if (it.kind === 'race' && it.choices.length <= it.seats) return;
+      if (it.kind === 'yesno' || it.seats === 1) {
+        var cur = it.kind === 'yesno' ? picks[it.id] : (picks[it.id] || [])[0];
+        if (cur === v) delete picks[it.id];
+        else picks[it.id] = it.kind === 'yesno' ? v : [v];
+      } else {
+        var arr = picks[it.id] || [];
+        var i = arr.indexOf(v);
+        if (i >= 0) arr.splice(i, 1);
+        else if (arr.length >= it.seats) { toast('Only ' + it.seats + ' winners. Tap one to unpick it first.'); return; }
+        else arr.push(v);
+        picks[it.id] = arr;
+      }
+      save(); paintItem(it); paintProgress();
+    });
+
+    document.getElementById('love-d').addEventListener('click', function () {
+      var n = 0;
+      items.forEach(function (it) {
+        if (it.kind !== 'race') return;
+        var dems = it.choices.filter(function (c) { return c.party === 'D'; });
+        if (dems.length === 1) { picks[it.id] = [dems[0].name]; n++; }
+      });
+      save(); paintAll();
+      toast('💙 Picked the Democrat in ' + n + ' races');
+    });
+
+    document.getElementById('clear').addEventListener('click', function () {
+      if (!Object.keys(picks).length) return;
+      items.forEach(function (it) { if (!(it.kind === 'race' && it.choices.length <= it.seats)) delete picks[it.id]; });
+      save(); paintAll();
+      toast('Picks cleared');
+    });
+
+    // Contest entry
+    var fields = ['f-name', 'f-handle', 'f-note'];
+    fields.forEach(function (id) {
+      var el = document.getElementById(id);
+      try { el.value = localStorage.getItem(KEY + '-' + id) || ''; } catch (e) {}
+      el.addEventListener('input', function () { try { localStorage.setItem(KEY + '-' + id, el.value); } catch (e) {} });
+    });
+
+    function pickText() {
+      var lines = [], section = '';
+      items.forEach(function (it) {
+        if (it.section !== section) { section = it.section; lines.push('', '== ' + section + ' =='); }
+        var p = picks[it.id];
+        var v = !p ? '(no pick)' : it.kind === 'yesno' ? (it.title ? (p === 'Yes' ? 'Passes' : 'Fails') : p) : p.join(', ');
+        lines.push(it.name.replace('Proposition ', 'Prop ') + ': ' + v);
+      });
+      return lines.join('\n');
+    }
+
+    function entryText() {
+      var name = document.getElementById('f-name').value.trim();
+      var handle = document.getElementById('f-handle').value.trim();
+      var note = document.getElementById('f-note').value.trim();
+      return 'Name: ' + (name || '') + (handle ? '\nContact: ' + handle : '') + (note ? '\nTiebreaker / hot take: ' + note : '') +
+        '\n\nMy SF ballot predictions for Nov 3, 2026 (' + items.filter(isDone).length + '/' + items.length + ' picked):\n' + pickText() +
+        '\n\nMake your own: https://barakgila.com/ballot-2026\n';
+    }
+
+    function submit() {
+      var nameEl = document.getElementById('f-name');
+      if (!nameEl.value.trim()) {
+        document.getElementById('enter').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function () { nameEl.focus(); }, 350);
+        toast('Add your name to enter');
+        return;
+      }
+      var left = items.length - items.filter(isDone).length;
+      if (left && !confirm(left + ' items still have no pick. Submit anyway?')) return;
+      var subject = 'SF ballot prediction: ' + nameEl.value.trim();
+      location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(entryText());
+    }
+    document.getElementById('submit').addEventListener('click', submit);
+    document.getElementById('submit2').addEventListener('click', submit);
+
+    document.getElementById('copy').addEventListener('click', function () {
+      var text = entryText();
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+        function () { toast('Copied. Paste into an email to ' + EMAIL); },
+        function () { prompt('Copy your picks:', text); }
+      );
+    });
+
+    paintAll();
+  })();
+  </script>
+</body>
+</html>
