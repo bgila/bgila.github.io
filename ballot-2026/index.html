@@ -455,7 +455,7 @@
         if (ours.length === 1) { picks[it.id] = [ours[0].name]; n++; }
       });
       save(); paintAll();
-      toast((party === 'D' ? '💙 Picked the Democrat' : '❤️ Picked the Republican') + ' in ' + n + ' races');
+      toast((party === 'D' ? '🫏 Picked the Democrat' : '🐘 Picked the Republican') + ' in ' + n + ' races');
       loveParty = party === 'D' ? 'R' : 'D';
       this.textContent = 'I love the ' + loveParty;
       this.classList.toggle('r', loveParty === 'R');
