@@ -635,7 +635,7 @@
       if (!items.some(function (it) { var p = picks[it.id]; return p && p.length; })) { toast('Make some picks first'); return; }
       buildImage().then(function (canvas) {
         canvas.toBlob(function (blob) {
-          var file = new File([blob], 'sf-ballot-predictions.png', { type: 'image/png' });
+          var file = { name: 'sf-ballot-predictions.png' };
           function download() {
             var a = document.createElement('a');
             a.href = URL.createObjectURL(blob); a.download = file.name;
@@ -643,16 +643,11 @@
             setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
             toast('Image saved');
           }
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            // Safari can refuse if the user gesture expired while drawing; fall back to a download.
-            navigator.share({ files: [file], title: 'My SF ballot predictions' }).catch(function (e) {
-              if (e && e.name === 'NotAllowedError') download();
-            });
-          } else download();
+          download();
         }, 'image/png');
       });
     }
-    // Warm the photo cache so the share sheet opens quickly after a tap.
+    // Warm the photo cache so the image builds quickly after a tap.
     setTimeout(function () {
       items.forEach(function (it) { if (it.kind === 'race') it.choices.forEach(function (ch) { if (ch.img) loadImg('img/' + ch.img + '.jpg'); }); });
     }, 1500);
