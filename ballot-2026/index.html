@@ -201,6 +201,13 @@
       flex: none; border: 0; border-radius: 999px; background: var(--accent); color: #fff;
       padding: 12px 18px; font-weight: 700; font-size: 15px;
     }
+    .btn-save {
+      flex: none; border: 0; border-radius: 999px; background: var(--ink); color: #fff;
+      padding: 12px 18px; font-weight: 700; font-size: 15px;
+    }
+    .btn-save:hover { background: #000; }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-primary:hover { background: #000; }
     .btn-submit:hover { background: #9a3412; }
 
     .toast {
@@ -231,7 +238,8 @@
       .csub { justify-content: center; }
       .avatar { width: 56px; height: 56px; }
       .entry .row2 { grid-template-columns: 1fr; gap: 0; }
-      .btn-submit { padding: 12px 14px; }
+      .btn-submit, .btn-save { padding: 12px 13px; font-size: 14px; }
+      .bar .wrap { gap: 8px; }
       .progress .label span { display: none; }
     }
   </style>
@@ -246,6 +254,7 @@
       <a class="btn" href="#enter" style="text-decoration:none">Jump to submit</a>
     </div>
     <div class="actions">
+      <button class="btn btn-primary" data-save>Save image</button>
       <button class="btn btn-d" id="love-d">I love the D</button>
       <button class="btn btn-ghost" id="clear">Clear picks</button>
     </div>
@@ -294,6 +303,7 @@
         <div class="label" id="progress-label"></div>
         <div class="meter"><i id="meter"></i></div>
       </div>
+      <button class="btn-save" data-save>Save image</button>
       <button class="btn-submit" id="submit">Submit picks</button>
     </div>
   </div>
@@ -509,6 +519,144 @@
         function () { prompt('Copy your picks:', text); }
       );
     });
+
+    // Shareable image (1080x1350, 4:5 portrait). Only items with a pick are drawn.
+    var imgCache = {};
+    function loadImg(src) {
+      if (!imgCache[src]) imgCache[src] = new Promise(function (res) {
+        var im = new Image();
+        im.onload = function () { res(im); };
+        im.onerror = function () { res(null); };
+        im.src = src;
+      });
+      return imgCache[src];
+    }
+
+    function fit(ctx, text, maxW) {
+      if (ctx.measureText(text).width <= maxW) return text;
+      while (text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+      return text.replace(/[\s,]+$/, '') + '…';
+    }
+
+    function drawAvatar(ctx, im, name, x, y, d) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x + d / 2, y + d / 2, d / 2, 0, Math.PI * 2); ctx.closePath();
+      ctx.fillStyle = '#e7e2d7'; ctx.fill(); ctx.clip();
+      if (im) {
+        // object-fit: cover, biased toward the top like the page avatars
+        var s = Math.max(d / im.width, d / im.height), w = im.width * s, h = im.height * s;
+        ctx.drawImage(im, x + (d - w) / 2, y + (d - h) * 0.18, w, h);
+      } else {
+        ctx.fillStyle = '#8a8273'; ctx.font = '700 ' + Math.round(d * 0.36) + 'px Raleway, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(initials(name), x + d / 2, y + d / 2 + 1);
+        ctx.textAlign = 'left';
+      }
+      ctx.restore();
+    }
+
+    function buildImage() {
+      var W = 1080, H = 1350, PAD = 64;
+      var rows = items.filter(function (it) { var p = picks[it.id]; return it.kind === 'yesno' ? !!p : p && p.length; });
+      var srcs = [];
+      rows.forEach(function (it) {
+        if (it.kind === 'race') it.choices.forEach(function (c) { if (c.img && picks[it.id].indexOf(c.name) >= 0) srcs.push('img/' + c.img + '.jpg'); });
+      });
+      var fonts = document.fonts ? Promise.all([document.fonts.load('700 40px Raleway'), document.fonts.load('500 20px Raleway')]).catch(function () {}) : Promise.resolve();
+      return Promise.all([fonts].concat(srcs.map(loadImg))).then(function (loaded) {
+        var photo = {};
+        srcs.forEach(function (src, i) { photo[src] = loaded[i + 1]; });
+        var c = document.createElement('canvas'); c.width = W; c.height = H;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#f4f1ea'; ctx.fillRect(0, 0, W, H);
+        ctx.textBaseline = 'alphabetic';
+
+        ctx.fillStyle = '#1b1d21'; ctx.font = '700 58px Raleway, sans-serif';
+        ctx.fillText('My SF ballot predictions', PAD, PAD + 52);
+        ctx.fillStyle = '#3f434a'; ctx.font = '500 26px Raleway, sans-serif';
+        var name = document.getElementById('f-name').value.trim();
+        ctx.fillText((name ? name + ' · ' : '') + 'November 3, 2026 · ' + rows.length + ' picks', PAD, PAD + 96);
+
+        var top = PAD + 136, bottom = H - 118, colGap = 36;
+        var races = rows.filter(function (it) { return it.kind === 'race'; });
+        var measures = rows.filter(function (it) { return it.kind === 'yesno'; });
+
+        // Measures: compact grid at the bottom.
+        var mCols = 4, mH = 62, mGap = 12;
+        var mW = (W - PAD * 2 - mGap * (mCols - 1)) / mCols;
+        var mRows = Math.ceil(measures.length / mCols);
+        var mTop = bottom - mRows * mH - Math.max(0, mRows - 1) * mGap;
+        measures.forEach(function (it, i) {
+          var x = PAD + (i % mCols) * (mW + mGap), y = mTop + Math.floor(i / mCols) * (mH + mGap);
+          var yes = picks[it.id] === 'Yes';
+          ctx.fillStyle = yes ? '#e3f1e7' : '#f8e5e2';
+          ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, mW, mH, 10) : ctx.rect(x, y, mW, mH); ctx.fill();
+          var label = it.title ? it.name.replace('Proposition ', 'Prop ') : it.name.replace('Supreme Court: Retain Justice ', 'Retain ').replace('Kelli ', '');
+          ctx.fillStyle = '#3f434a'; ctx.font = '600 19px Raleway, sans-serif';
+          ctx.fillText(fit(ctx, label, mW - 24), x + 14, y + 25);
+          ctx.fillStyle = yes ? '#15803d' : '#b91c1c'; ctx.font = '700 22px Raleway, sans-serif';
+          ctx.fillText(it.title ? (yes ? 'Passes' : 'Fails') : (yes ? 'Yes' : 'No'), x + 14, y + 51);
+        });
+
+        // Races: two columns of photo rows filling the remaining space.
+        var rBottom = measures.length ? mTop - 28 : bottom;
+        var perCol = Math.max(1, Math.ceil(races.length / 2));
+        var rowH = Math.min(96, (rBottom - top) / perCol);
+        var av = Math.min(60, rowH - 12);
+        var labelSize = Math.max(14, Math.min(19, rowH * 0.27)), valueSize = Math.max(16, Math.min(27, rowH * 0.39));
+        var colW = (W - PAD * 2 - colGap) / 2;
+
+        races.forEach(function (it, i) {
+          var col = i < perCol ? 0 : 1, r = col ? i - perCol : i;
+          var x = PAD + col * (colW + colGap), y = top + r * rowH;
+          var p = picks[it.id];
+          var chosen = it.choices.filter(function (ch) { return p.indexOf(ch.name) >= 0; });
+          var step = chosen.length > 1 ? av * 0.62 : av;
+          chosen.forEach(function (ch, k) {
+            drawAvatar(ctx, ch.img ? photo['img/' + ch.img + '.jpg'] : null, ch.name, x + k * step, y + (rowH - av) / 2, av);
+          });
+          var tx = x + step * (chosen.length - 1) + av + 14;
+          var label = it.name.replace(/^SF Board of Supervisors - /, 'Supervisor, ').replace(' Congressional District', '').replace(/^SF /, '');
+          ctx.fillStyle = '#676c75'; ctx.font = '600 ' + labelSize + 'px Raleway, sans-serif';
+          ctx.fillText(fit(ctx, label, x + colW - tx), tx, y + rowH / 2 - valueSize * 0.28);
+          ctx.fillStyle = '#1b1d21'; ctx.font = '700 ' + valueSize + 'px Raleway, sans-serif';
+          ctx.fillText(fit(ctx, p.join(', '), x + colW - tx), tx, y + rowH / 2 + valueSize * 0.82);
+        });
+
+        // Footer link
+        ctx.fillStyle = '#1b1d21'; ctx.fillRect(0, H - 92, W, 92);
+        ctx.fillStyle = '#fff'; ctx.font = '700 32px Raleway, sans-serif';
+        ctx.fillText('Make your picks: barakgila.com/ballot', PAD, H - 34);
+        return c;
+      });
+    }
+
+    function saveImage() {
+      if (!items.some(function (it) { var p = picks[it.id]; return p && p.length; })) { toast('Make some picks first'); return; }
+      buildImage().then(function (canvas) {
+        canvas.toBlob(function (blob) {
+          var file = new File([blob], 'sf-ballot-predictions.png', { type: 'image/png' });
+          function download() {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = file.name;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+            toast('Image saved');
+          }
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            // Safari can refuse if the user gesture expired while drawing; fall back to a download.
+            navigator.share({ files: [file], title: 'My SF ballot predictions' }).catch(function (e) {
+              if (e && e.name === 'NotAllowedError') download();
+            });
+          } else download();
+        }, 'image/png');
+      });
+    }
+    // Warm the photo cache so the share sheet opens quickly after a tap.
+    setTimeout(function () {
+      items.forEach(function (it) { if (it.kind === 'race') it.choices.forEach(function (ch) { if (ch.img) loadImg('img/' + ch.img + '.jpg'); }); });
+    }, 1500);
+    document.querySelectorAll('[data-save]').forEach(function (b) { b.addEventListener('click', saveImage); });
 
     paintAll();
   })();
