@@ -21,9 +21,7 @@
   <meta property="og:url" content="https://barakgila.com/ballot-2026/">
   <meta property="og:type" content="website">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,700' rel='stylesheet' type='text/css'>
 
   <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
@@ -50,31 +48,25 @@
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: Raleway, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       font-size: 15px;
       line-height: 1.45;
       -webkit-font-smoothing: antialiased;
       padding-bottom: 96px;
+      font-variant-numeric: lining-nums;
     }
     a { color: inherit; }
-    button { font: inherit; color: inherit; cursor: pointer; }
+    button { font: inherit; font-variant-numeric: lining-nums; color: inherit; cursor: pointer; }
     .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
 
     /* Masthead */
     header { padding: 28px 0 8px; }
-    .back { font-size: 13px; color: var(--ink2); text-decoration: none; }
+    .back { display: inline-block; margin-bottom: 20px; font-size: 14px; color: var(--ink2); text-decoration: none; }
     .back:hover { text-decoration: underline; }
-    .eyebrow {
-      margin: 22px 0 6px;
-      font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--accent);
-    }
     h1 {
-      font-family: Fraunces, Georgia, serif; font-weight: 900;
-      font-size: clamp(36px, 9vw, 60px); line-height: .98; letter-spacing: -.02em;
-      margin: 0 0 12px;
+      font-weight: 700; font-size: clamp(32px, 8vw, 40px); line-height: 1.15; letter-spacing: -.02em;
+      margin: 0 0 18px;
     }
-    .lede { font-size: 17px; color: var(--ink2); margin: 0 0 18px; max-width: 34em; }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .btn {
       border: 1.5px solid var(--ink); background: transparent; border-radius: 999px;
@@ -82,29 +74,32 @@
     }
     .btn:hover { background: rgba(0,0,0,.05); }
     .btn-d { background: var(--dem); border-color: var(--dem); color: #fff; }
-    .btn-d:hover { background: #1e40af; }
+    .btn-d:hover { background: #1e40af; border-color: #1e40af; }
+    .btn-d.r { background: var(--rep); border-color: var(--rep); }
+    .btn-d.r:hover { background: #991b1b; border-color: #991b1b; }
     .btn-ghost { border-color: transparent; color: var(--ink2); padding-left: 8px; padding-right: 8px; }
 
     /* Section nav */
     nav.jump {
       position: sticky; top: 0; z-index: 5;
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: var(--bg);
       border-bottom: 1px solid var(--rule);
-      margin-top: 22px;
+      margin-top: 18px;
     }
-    nav.jump .wrap { display: flex; gap: 6px; overflow-x: auto; padding-top: 10px; padding-bottom: 10px; scrollbar-width: none; }
+    nav.jump .wrap { display: flex; gap: 18px; overflow-x: auto; scrollbar-width: none; }
     nav.jump .wrap::-webkit-scrollbar { display: none; }
     nav.jump a {
-      flex: none; text-decoration: none; font-size: 13px; font-weight: 600;
-      padding: 6px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--rule); color: var(--ink2);
+      flex: none; text-decoration: none; font-size: 14px; font-weight: 600; color: var(--ink2);
+      padding: 12px 0 10px; border-bottom: 2px solid transparent;
     }
-    nav.jump a .n { color: var(--ink3); font-weight: 500; margin-left: 4px; }
-    nav.jump a.done { color: var(--pick); border-color: #b9d8c4; background: var(--pick-bg); }
+    nav.jump a:hover { color: var(--ink); }
+    nav.jump a .n { color: var(--ink3); font-weight: 400; margin-left: 4px; font-size: 12.5px; }
+    nav.jump a.done .n { color: var(--pick); }
+    nav.jump a.active { color: var(--ink); border-bottom-color: var(--ink); }
 
     h2 {
-      font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 24px;
-      margin: 34px 0 12px; scroll-margin-top: 64px;
+      font-weight: 700; font-size: 24px; letter-spacing: -.01em;
+      margin: 34px 0 12px; scroll-margin-top: 56px;
     }
 
     /* Ballot item cards */
@@ -221,10 +216,8 @@
 <body>
 
   <header class="wrap">
-    <a class="back" href="/projects">&larr; barakgila.com/projects</a>
-    <div class="eyebrow">San Francisco · November 3, 2026</div>
+    <a class="back" href="/projects">&larr; projects</a>
     <h1>Predict the SF&nbsp;Ballot</h1>
-    <p class="lede">Not who you're voting for: who you think will <em>win</em>. Pick every race and measure, then enter the prediction contest.</p>
     <div class="actions">
       <button class="btn btn-d" id="love-d">I love the D</button>
       <a class="btn" href="#enter" style="text-decoration:none">Jump to submit</a>
@@ -352,11 +345,29 @@
       document.getElementById('jump').innerHTML = sections.map(function (s, i) {
         var its = items.filter(function (it) { return it.section === s; });
         var d = its.filter(isDone).length;
-        return '<a href="#s-' + (i + 1) + '" class="' + (d === its.length ? 'done' : '') + '">' + esc(s) + '<span class="n">' + d + '/' + its.length + '</span></a>';
+        return '<a href="#s-' + (i + 1) + '" class="' + (d === its.length ? 'done' : '') + (i === activeSection ? ' active' : '') + '">' + esc(s) + '<span class="n">' + d + '/' + its.length + '</span></a>';
       }).join('');
     }
 
-    function paintAll() { items.forEach(paintItem); paintProgress(); }
+    function paintAll() { items.forEach(paintItem); paintProgress(); spy(); }
+
+    // Highlight the section currently under the sticky nav.
+    var activeSection = -1;
+    function spy() {
+      var navH = document.querySelector('nav.jump').offsetHeight;
+      var idx = 0;
+      for (var i = 0; i < sections.length; i++) {
+        if (document.getElementById('s-' + (i + 1)).getBoundingClientRect().top - navH <= 80) idx = i;
+      }
+      var links = document.querySelectorAll('#jump a');
+      links.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+      if (idx !== activeSection) {
+        activeSection = idx;
+        var nav = document.getElementById('jump'), a = links[idx];
+        nav.scrollTo({ left: a.offsetLeft - nav.offsetLeft - 16, behavior: 'smooth' });
+      }
+    }
+    window.addEventListener('scroll', spy, { passive: true });
 
     var toastTimer;
     function toast(msg) {
@@ -386,15 +397,19 @@
       save(); paintItem(it); paintProgress();
     });
 
+    var loveParty = 'D';
     document.getElementById('love-d').addEventListener('click', function () {
-      var n = 0;
+      var party = loveParty, n = 0;
       items.forEach(function (it) {
         if (it.kind !== 'race') return;
-        var dems = it.choices.filter(function (c) { return c.party === 'D'; });
-        if (dems.length === 1) { picks[it.id] = [dems[0].name]; n++; }
+        var ours = it.choices.filter(function (c) { return c.party === party; });
+        if (ours.length === 1) { picks[it.id] = [ours[0].name]; n++; }
       });
       save(); paintAll();
-      toast('💙 Picked the Democrat in ' + n + ' races');
+      toast((party === 'D' ? '💙 Picked the Democrat' : '❤️ Picked the Republican') + ' in ' + n + ' races');
+      loveParty = party === 'D' ? 'R' : 'D';
+      this.textContent = 'I love the ' + loveParty;
+      this.classList.toggle('r', loveParty === 'R');
     });
 
     document.getElementById('clear').addEventListener('click', function () {
