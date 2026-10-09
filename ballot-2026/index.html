@@ -319,6 +319,15 @@
     var picks = {};
     try { picks = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
 
+    // Drop saved picks that no longer match the ballot (e.g. a candidate moved to another race).
+    items.forEach(function (it) {
+      var p = picks[it.id];
+      if (p == null) return;
+      if (it.kind === 'yesno') { if (p !== 'Yes' && p !== 'No') delete picks[it.id]; return; }
+      var names = it.choices.map(function (c) { return c.name; });
+      picks[it.id] = (Array.isArray(p) ? p : []).filter(function (n) { return names.indexOf(n) >= 0; }).slice(0, it.seats);
+    });
+
     // Uncontested races are decided already.
     items.forEach(function (it) {
       if (it.kind === 'race' && it.choices.length <= it.seats) picks[it.id] = it.choices.map(function (c) { return c.name; });
