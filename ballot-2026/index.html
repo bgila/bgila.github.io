@@ -532,10 +532,11 @@
       return imgCache[src];
     }
 
-    function fit(ctx, text, maxW) {
-      if (ctx.measureText(text).width <= maxW) return text;
-      while (text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
-      return text.replace(/[\s,]+$/, '') + '…';
+    // Draw the full text, shrinking the font until it fits; never truncate.
+    function fillFit(ctx, text, x, y, maxW, weight, size) {
+      do { ctx.font = weight + ' ' + size + 'px Raleway, sans-serif'; size -= 0.5; }
+      while (size > 6 && ctx.measureText(text).width > maxW);
+      ctx.fillText(text, x, y);
     }
 
     function drawAvatar(ctx, im, name, x, y, d) {
@@ -592,23 +593,23 @@
           ctx.fillStyle = yes ? '#e3f1e7' : '#f8e5e2';
           ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, mW, mH, 10) : ctx.rect(x, y, mW, mH); ctx.fill();
           var label = it.title ? it.name.replace('Proposition ', 'Prop ') : it.name.replace('Supreme Court: Retain Justice ', 'Retain ').replace('Kelli ', '');
-          ctx.fillStyle = '#3f434a'; ctx.font = '600 19px Raleway, sans-serif';
-          ctx.fillText(fit(ctx, label, mW - 24), x + 14, y + 25);
+          ctx.fillStyle = '#3f434a';
+          fillFit(ctx, label, x + 14, y + 25, mW - 24, 600, 19);
           ctx.fillStyle = yes ? '#15803d' : '#b91c1c'; ctx.font = '700 22px Raleway, sans-serif';
           ctx.fillText(it.title ? (yes ? 'Passes' : 'Fails') : (yes ? 'Yes' : 'No'), x + 14, y + 51);
         });
 
-        // Races: two columns of photo rows filling the remaining space.
+        // Races: single-seat races in two columns, then multi-seat races as full-width rows.
+        var singles = races.filter(function (it) { return it.seats === 1; });
+        var multis = races.filter(function (it) { return it.seats > 1; });
         var rBottom = measures.length ? mTop - 28 : bottom;
-        var perCol = Math.max(1, Math.ceil(races.length / 2));
-        var rowH = Math.min(96, (rBottom - top) / perCol);
+        var perCol = Math.ceil(singles.length / 2);
+        var rowH = Math.min(96, (rBottom - top) / Math.max(1, perCol + multis.length));
         var av = Math.min(60, rowH - 12);
         var labelSize = Math.max(14, Math.min(19, rowH * 0.27)), valueSize = Math.max(16, Math.min(27, rowH * 0.39));
         var colW = (W - PAD * 2 - colGap) / 2;
 
-        races.forEach(function (it, i) {
-          var col = i < perCol ? 0 : 1, r = col ? i - perCol : i;
-          var x = PAD + col * (colW + colGap), y = top + r * rowH;
+        function drawRace(it, x, y, w) {
           var p = picks[it.id];
           var chosen = it.choices.filter(function (ch) { return p.indexOf(ch.name) >= 0; });
           var step = chosen.length > 1 ? av * 0.62 : av;
@@ -617,10 +618,17 @@
           });
           var tx = x + step * (chosen.length - 1) + av + 14;
           var label = it.name.replace(/^SF Board of Supervisors - /, 'Supervisor, ').replace(' Congressional District', '').replace(/^SF /, '');
-          ctx.fillStyle = '#676c75'; ctx.font = '600 ' + labelSize + 'px Raleway, sans-serif';
-          ctx.fillText(fit(ctx, label, x + colW - tx), tx, y + rowH / 2 - valueSize * 0.28);
-          ctx.fillStyle = '#1b1d21'; ctx.font = '700 ' + valueSize + 'px Raleway, sans-serif';
-          ctx.fillText(fit(ctx, p.join(', '), x + colW - tx), tx, y + rowH / 2 + valueSize * 0.82);
+          ctx.fillStyle = '#676c75';
+          fillFit(ctx, label, tx, y + rowH / 2 - valueSize * 0.28, x + w - tx, 600, labelSize);
+          ctx.fillStyle = '#1b1d21';
+          fillFit(ctx, p.join(', '), tx, y + rowH / 2 + valueSize * 0.82, x + w - tx, 700, valueSize);
+        }
+        singles.forEach(function (it, i) {
+          var col = i < perCol ? 0 : 1, r = col ? i - perCol : i;
+          drawRace(it, PAD + col * (colW + colGap), top + r * rowH, colW);
+        });
+        multis.forEach(function (it, i) {
+          drawRace(it, PAD, top + (perCol + i) * rowH, W - PAD * 2);
         });
 
         // Footer link
