@@ -116,6 +116,9 @@ def sanitize(html, subject, date, anchor, cache):
     elif "<head" in html:
         html = re.sub(r"(<head[^>]*>)", r"\1" + f"<title>{title}</title>", html, count=1)
 
+    # merge fields sometimes print the recipient address into the body
+    html = re.sub(r"[\w.+-]+@americanpolitics\.co", "[recipient email]", html)
+
     banner = BANNER.format(subject=subject.replace("<", "&lt;"), date=date, anchor=anchor)
     if "<body" in html:
         html = re.sub(r"(<body[^>]*>)", r"\1" + banner, html, count=1)
@@ -153,37 +156,40 @@ def main():
 
     os.makedirs(OUT_IMAGES, exist_ok=True)
 
-    results = {
-        r["date"]: r
-        for r in csv.DictReader(open(os.path.join(src, "results/pangram-results-chan.csv")))
+    # one row per email, keyed by archive stem (chan-YYYY-MM-DD[b])
+    results = {}
+    for r in csv.DictReader(open(os.path.join(src, "results/pangram-results-chan.csv"))):
+        head = open(os.path.join(src, "emails", r["file"]), encoding="utf-8").read().split("\n---\n")[0]
+        m = re.search(r"^Archive: (\S+)$", head, re.M)
+        results[m.group(1) if m else f"chan-{r['date']}"] = r
+    corpus = {
+        c["id"]: c for c in json.load(open(os.path.join(src, "results/corpus_chan.json")))
     }
-    corpus = {c["date"]: c for c in json.load(open(os.path.join(src, "results/corpus_chan.json")))}
-    index = {
-        e["id"].replace("chan-", ""): e
-        for e in json.load(open(os.path.join(src, "emails-html/index.json")))
-    }
+    index = {e["id"]: e for e in json.load(open(os.path.join(src, "emails-html/index.json")))}
 
     cache = {}
     emails = []
     failures = []
 
-    for date in sorted(results, reverse=True):
-        r = results[date]
-        meta = index.get(date, {})
-        anchor = f"e{date}"
-        raw = open(os.path.join(src, f"emails-html/html/chan-{date}.html"), encoding="utf-8").read()
+    for stem in sorted(results, reverse=True):
+        r = results[stem]
+        date = r["date"]
+        meta = index.get(stem, {})
+        anchor = f"e{stem[5:]}"
+        raw = open(os.path.join(src, f"emails-html/html/{stem}.html"), encoding="utf-8").read()
         clean = sanitize(raw, r["subject"], date, anchor, cache)
 
         problems = audit(clean)
         if problems:
-            failures.append((date, problems))
+            failures.append((stem, problems))
 
-        out = os.path.join(OUT_EMAILS, f"chan-{date}.html")
+        out = os.path.join(OUT_EMAILS, f"{stem}.html")
         with open(out, "w", encoding="utf-8") as f:
             f.write(clean)
 
         emails.append(
             {
+                "id": stem[5:],
                 "date": date,
                 "subject": r["subject"],
                 "sender": r["sender"],
@@ -191,9 +197,9 @@ def main():
                 "verdict": r["verdict"],
                 "fraction_ai": float(r["fraction_ai"]),
                 "version": r["version"],
-                "html": f"emails/chan-{date}.html",
+                "html": f"emails/{stem}.html",
                 "links": meta.get("n_links", 0),
-                "text": corpus.get(date, {}).get("text", ""),
+                "text": corpus.get(r["file"], {}).get("text", ""),
             }
         )
 
@@ -210,8 +216,9 @@ def main():
         "summary": {
             "n": n,
             "counts": counts,
-            "any_ai": sum(1 for e in emails if e["fraction_ai"] > 0),
-            "all_ai": sum(1 for e in emails if e["fraction_ai"] == 1),
+            # pangram-4.1 returns ~1e-30 rather than 0 for clean text, so count by verdict
+            "any_ai": n - counts["Human"],
+            "all_ai": counts["AI"],
             "mean_fraction_ai": round(sum(e["fraction_ai"] for e in emails) / n, 3),
             "words": sum(e["words"] for e in emails),
             "first": min(e["date"] for e in emails),

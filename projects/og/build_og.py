@@ -80,12 +80,12 @@ CARDS = {
         <h1 style="margin:20px 0 22px;max-width:24ch">Connie Chan is using LLMs to run her campaign</h1>
         <div class="sub" style="max-width:52ch">
           An AI-text detector finds generated content in
-          <strong style="color:{INK}">11 of the 19 emails</strong> her CA&#8209;11 campaign sent
-          in 27 days &mdash; and reads <strong style="color:{INK}">6</strong> as machine-written
-          end to end.
+          <strong style="color:{INK}">47 of the 63 emails</strong> her CA&#8209;11 campaign sent
+          in 73 days &mdash; and reads <strong style="color:{INK}">16</strong> as mostly or entirely
+          machine-written.
         </div>
         <div class="spacer"></div>
-        {bar([(8, BLUE_LIGHT, "8 human"), (5, BLUE_MID, "5 partly AI"), (6, BLUE_DARK, "6 entirely AI")])}
+        {bar([(16, BLUE_LIGHT, "16 human"), (31, BLUE_MID, "31 partly AI"), (16, BLUE_DARK, "16 mostly AI")])}
         """,
         title_size=58,
     ),

@@ -12,12 +12,12 @@
 
   <meta charset="utf-8">
   <title>Connie Chan is using LLMs to run her campaign — Barak Gila</title>
-  <meta name="description" content="Every email Connie Chan's CA-11 campaign sent between August 19 and September 14, 2026, scored with Pangram 4.0's AI-text detector. 11 of 19 carry AI-generated content; 6 are wholly AI.">
+  <meta name="description" content="Every email Connie Chan's CA-11 campaign sent between August 19 and October 30, 2026, scored with Pangram 4.1's AI-text detector. 47 of 63 carry AI-generated content; 16 are mostly or entirely AI.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Connie Chan is using LLMs to run her campaign">
-  <meta property="og:description" content="An AI-text detector finds generated content in 11 of the 19 emails her CA-11 campaign sent in 27 days — and reads 6 as machine-written end to end.">
+  <meta property="og:description" content="An AI-text detector finds generated content in 47 of the 63 emails her CA-11 campaign sent in 73 days — and reads 16 as mostly or entirely machine-written.">
   <meta property="og:image" content="https://barakgila.com/projects/connie-chan-ai/og.png">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
@@ -47,15 +47,15 @@
     Connie Chan has criticized her opponent Scott Wiener, who wrote California's AI regulation law,
     <a href="https://sd11.senate.ca.gov/news/senator-wieners-landmark-responsible-ai-innovation-bill-advances-final-vote" target="_blank" rel="noopener">SB 53 (2025)</a>,
     for using AI as part of his campaign. Meanwhile, she's been sending her supporters 100% AI slop.
-    Between August 19 and September 14, 2026, Connie Chan’s CA&#8209;11 campaign sent 19 emails to
-    folks who signed up on her campaign. Pangram 4.0 finds generated content in 11 of them &mdash;
-    and reads 6 as machine-written end to end.
+    Between August 19 and October 30, 2026, Connie Chan’s CA&#8209;11 campaign sent 63 emails to
+    folks who signed up on her campaign. Pangram 4.1 finds generated content in 47 of them &mdash;
+    and reads 16 as mostly or entirely machine-written.
   </p>
 
   <div class="cc-stats" id="cc-stats"></div>
 
   <div class="cc-figure">
-    <p class="cc-figure-title">How the 19 emails split</p>
+    <p class="cc-figure-title" id="cc-figure-title">How the emails split</p>
     <p class="cc-figure-sub">Segments Pangram scored as AI-generated, as a share of each email.</p>
     <div class="cc-dist" id="cc-dist"></div>
     <div class="cc-legend" id="cc-legend"></div>
@@ -93,7 +93,7 @@
   var LABEL = {
     Human: 'No AI content',
     Mixed: 'Partly AI',
-    AI: 'Entirely AI'
+    AI: 'Mostly or entirely AI'
   };
 
   var state = { data: null, filter: 'all', sort: 'date', dir: -1 };
@@ -125,8 +125,9 @@
     var pctAll = Math.round(s.all_ai / s.n * 100);
     document.getElementById('cc-stats').innerHTML = [
       stat(pctAny + '%', 'of emails contain AI-generated text<br>(' + s.any_ai + ' of ' + s.n + ')'),
-      stat(pctAll + '%', 'are AI-generated end to end<br>(' + s.all_ai + ' of ' + s.n + ')')
+      stat(pctAll + '%', 'are mostly or entirely AI-generated<br>(' + s.all_ai + ' of ' + s.n + ')')
     ].join('');
+    document.getElementById('cc-figure-title').textContent = 'How the ' + s.n + ' emails split';
 
     // distribution bar: one stacked bar, segments sized by count
     var dist = '', legend = '';
@@ -169,7 +170,7 @@
 
     document.getElementById('cc-rows').innerHTML = rows.map(function (e) {
       var pct = Math.round(e.fraction_ai * 100);
-      return '<tr id="e' + e.date + '">' +
+      return '<tr id="e' + e.id + '">' +
         '<td class="cc-date">' + fmtDate(e.date) + '</td>' +
         '<td class="cc-subject"><a href="' + esc(e.html) + '">' + esc(e.subject) + '</a>' +
           '<span class="cc-sender">' + esc(e.sender) + '</span></td>' +
@@ -182,7 +183,7 @@
             '" style="width:' + pct + '%"></span></span>' +
           '<span class="cc-pct">' + pct + '%</span>' +
         '</div></td>' +
-        '<td><button class="cc-copy" data-date="' + e.date + '">Copy scored text</button></td>' +
+        '<td><button class="cc-copy" data-id="' + e.id + '">Copy scored text</button></td>' +
       '</tr>';
     }).join('');
   }
@@ -215,7 +216,7 @@
 
     var btn = ev.target.closest('.cc-copy');
     if (btn) {
-      var row = state.data.emails.find(function (e) { return e.date === btn.dataset.date; });
+      var row = state.data.emails.find(function (e) { return e.id === btn.dataset.id; });
       if (!row) return;
       navigator.clipboard.writeText(row.text).then(function () {
         var was = btn.textContent;
