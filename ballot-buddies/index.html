@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SF Ballot Buddies</title>
+  <meta name="description" content="Mark how you voted in San Francisco on November 3, 2026. See how rare your picks are, who votes like you, and where they live.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,600,700" rel="stylesheet" type="text/css">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <meta property="og:title" content="SF Ballot Buddies">
+  <meta property="og:description" content="Mark how you voted in San Francisco and see who votes like you.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://barakgila.com/ballot-buddies/">
+  <meta property="og:image" content="https://barakgila.com/ballot-buddies/s/og.jpg">
+  <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://barakgila.com/ballot-buddies/s/og.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shared-banner" id="shared-banner" hidden><div class="wrap"><span>You're viewing a shared ballot. Changes here won't be saved.</span><button class="btn" id="own-ballot">Go to my ballot</button></div></div>
+  <header class="wrap">
+    <h1>SF Ballot Buddies</h1>
+    <p class="sub">Mark how you voted in San Francisco on November 3, 2026. See how rare your picks are, who votes like you, and where they live.</p>
+    <p class="private">Your ZIP and picks stay in this browser unless you share a link, which includes them.</p>
+    <div class="start">
+      <label for="zip">Your ZIP</label>
+      <input id="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="94110" aria-describedby="where-hint">
+      <span class="place"><span id="zip-result"></span><select id="nb-pick" aria-label="Neighborhood in your ZIP" hidden></select></span>
+      <span class="hint" id="where-hint">Stays in your browser. Sets your neighborhood and district races.</span>
+      <span class="actions">
+        <button class="btn" id="prefill" hidden>Use my contest predictions</button>
+        <button class="btn btn-ghost" id="reset">Start over</button>
+      </span>
+    </div>
+  </header>
+  <main class="wrap app">
+    <div id="ballot" class="ballot"><p class="loading">Loading the ballot…</p></div>
+    <aside class="panel" id="panel" aria-label="Your results">
+      <button class="sheet-close" id="sheet-close" aria-label="Close results">Close</button>
+      <section class="card bloc-card">
+        <h2 class="p-h">Your bloc</h2>
+        <div id="bloc"><p class="p-note">Pick a few races to find yours.</p></div>
+        <div class="share-row" id="share-row" hidden>
+          <button class="btn-share" id="share-link">Share my ballot</button>
+          <button class="btn-image" id="share-image">Copy image</button>
+          <p class="share-note">The link includes your picks and ZIP.</p>
+        </div>
+      </section>
+      <section class="card map-card">
+        <h2 class="p-h" id="map-title">Where your Buddies live</h2>
+        <div class="map-wrap">
+          <svg id="map" role="img" aria-label="Map of San Francisco precincts shaded by how many of your Ballot Buddies live there"></svg>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="legend" id="legend"><span>Fewer</span><i></i><i></i><i></i><i></i><i></i><span>More Buddies</span></div>
+        <p class="p-note" id="map-note"></p>
+        <ol class="rows" id="top-nb"></ol>
+      </section>
+      <section class="card">
+        <h2 class="p-h">How rare is your ballot?</h2>
+        <p class="stat" id="rare-stat">Start picking</p>
+        <p class="p-note" id="rare-note">Every race you mark narrows it down.</p>
+        <button class="btn btn-small" id="next-q" hidden>Ask me the most revealing race</button>
+        <div id="break"></div>
+      </section>
+      <section class="card">
+        <h2 class="p-h">You vote most like</h2>
+        <div id="nb-match"><p class="p-note">Pick at least three citywide races.</p></div>
+      </section>
+      <section class="card">
+        <h2 class="p-h">Which endorser are you like?</h2>
+        <div id="endorsers"><p class="p-note">Pick at least five races that endorsers weighed in on.</p></div>
+      </section>
+    </aside>
+  </main>
+  <section class="wrap method">
+    <h2>How this works</h2>
+    <p id="method-counts"></p>
+    <p>San Francisco publishes each ballot card as a separate record. On mail ballots, cards usually stay in scan order, so we group them back into whole ballots. Some groups will be wrong. Election Day cards are shuffled and can't be grouped, so "people like you" means mail and QR voters. SF percentages use every counted card, including Election Day. For ranked races, we use your first choice. Judicial retention races are not included.</p>
+    <p>A statistical model sorts those ballots into about 200 small groups and four larger blocs. Blocs look only at how people voted, so a skipped race doesn't move yours. It never shows a real ballot. Your Buddies are the small groups that best match your picks, and that includes races outside your district. No real ballot has both, so the model learns each race from the voters who had it, and uses your pick as a clue to which group you fit. Those picks don't count toward your rarity score. The map shows estimates by area, and small counts use the wider bloc's pattern instead.</p>
+    <p>On held-out ballots, the model got about 80% of a hidden card right, compared with 68% from citywide totals. Neighborhoods are assigned by each precinct's center, so edges are approximate. Endorsements come from Sway voting groups and from each group's own published slate, and may contain errors.</p>
+  </section>
+  <footer class="wrap">Results through Nov 5, 2026. Precinct maps from DataSF. Vote counts from the San Francisco Department of Elections. Measure descriptions from Ballotpedia, with more detail on Sway.</footer>
+  <button class="peek" id="peek" aria-expanded="false"><span id="peek-text">Your results</span><span class="peek-open">Open</span></button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="share-card.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
