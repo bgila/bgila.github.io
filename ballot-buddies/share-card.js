@@ -29,38 +29,73 @@
       ctx.fill(path); ctx.stroke(path);
     });
     ctx.restore();
-    var x = 56, maxW = mx - x - 40, y = 84;
+    var x = 56, maxW = mx - x - 40, titleY = 84, footerY = H - 44;
     ctx.fillStyle = C.ink; ctx.textBaseline = 'alphabetic';
-    ctx.font = '700 40px ' + FONT; ctx.fillText('SF Ballot Buddies', x, y);
-    y += 62;
-    if (!d.generic) { ctx.fillStyle = C.ink3; ctx.font = '600 24px ' + FONT; ctx.fillText('My bloc', x, y); y += 16; }
-    var size = 66, lines;
-    do { ctx.font = '700 ' + size + 'px ' + FONT; lines = wrap(ctx, d.name, maxW); size -= 2; } while ((lines.length > 2 || lines.some(function (l) { return ctx.measureText(l).width > maxW; })) && size > 30);
-    size += 2;
-    ctx.fillStyle = C.ink;
-    lines.forEach(function (l) { y += size * 1.1; ctx.fillText(l, x, y); });
-    y += 52;
-    ctx.fillStyle = C.ink2; ctx.font = '500 26px ' + FONT;
-    if (d.generic) {
-      wrap(ctx, 'Mark how you voted on Nov 3, 2026. See how rare your picks are and where your Buddies live.', maxW).forEach(function (l) { ctx.fillText(l, x, y); y += 36; });
-    } else if (d.share != null) {
-      ctx.fillText(Math.round(d.share * 100) + '% of matched SF ballots', x, y); y += 36;
+    ctx.font = '700 40px ' + FONT; ctx.fillText('SF Ballot Buddies', x, titleY);
+
+    // Largest bloc name that fits in two lines.
+    var size = 66, nameLines;
+    for (;;) {
+      ctx.font = '700 ' + size + 'px ' + FONT;
+      nameLines = wrap(ctx, d.name, maxW);
+      var fits = nameLines.length <= 2 && nameLines.every(function (l) { return ctx.measureText(l).width <= maxW; });
+      if (fits || size <= 30) break;
+      size -= 2;
     }
-    if (d.rarity) {
-      y += 8; ctx.fillStyle = C.ink; ctx.font = '700 30px ' + FONT; ctx.fillText('My ballot: ' + d.rarity.charAt(0).toLowerCase() + d.rarity.slice(1), x, y); y += 12;
+    if (nameLines.length === 2) size = Math.min(size, 58);
+    ctx.font = '700 ' + size + 'px ' + FONT;
+
+    // Each block reports its height; spacing absorbs whatever is left above the footer.
+    var blocks = [];
+    if (!d.generic) blocks.push({ h: 24, draw: function (y) { ctx.fillStyle = C.ink3; ctx.font = '600 24px ' + FONT; ctx.fillText('My bloc', x, y + 20); } });
+    var lineH = Math.round(size * 1.08);
+    blocks.push({ h: lineH * nameLines.length, tight: !d.generic, draw: function (y) {
+      ctx.fillStyle = C.ink; ctx.font = '700 ' + size + 'px ' + FONT;
+      nameLines.forEach(function (l, i) { ctx.fillText(l, x, y + lineH * (i + 1) - Math.round(size * 0.2)); });
+    } });
+    if (d.generic) {
+      ctx.font = '500 26px ' + FONT;
+      var blurb = wrap(ctx, 'Mark how you voted on Nov 3, 2026. See how rare your picks are and where your Buddies live.', maxW);
+      blocks.push({ h: blurb.length * 36, draw: function (y) {
+        ctx.fillStyle = C.ink2; ctx.font = '500 26px ' + FONT;
+        blurb.forEach(function (l, i) { ctx.fillText(l, x, y + 26 + i * 36); });
+      } });
+    } else {
+      var stats = [];
+      if (d.share != null) stats.push({ text: Math.round(d.share * 100) + '% of matched SF ballots', font: '500 26px ', color: C.ink2, size: 26 });
+      if (d.rarity) stats.push({ text: 'My ballot: ' + d.rarity.charAt(0).toLowerCase() + d.rarity.slice(1), font: '700 28px ', color: C.ink, size: 28 });
+      if (stats.length) blocks.push({ h: stats.length * 38 - 6, draw: function (y) {
+        stats.forEach(function (s, i) { ctx.fillStyle = s.color; ctx.font = s.font + FONT; ctx.fillText(s.text, x, y + s.size - 2 + i * 38); });
+      } });
     }
     if (d.top.length) {
-      y += 40; ctx.fillStyle = C.ink3; ctx.font = '600 22px ' + FONT; ctx.fillText('Where my Buddies live', x, y); y += 8;
-      ctx.font = '600 25px ' + FONT;
-      d.top.forEach(function (t) {
-        y += 36; ctx.fillStyle = C.ink;
-        var nm = t.name; while (ctx.measureText(nm).width > maxW - 90 && nm.length > 4) nm = nm.slice(0, -2);
-        ctx.fillText(nm, x, y);
-        ctx.fillStyle = C.ink2; ctx.textAlign = 'right'; ctx.fillText(t.x.toFixed(1) + '×', x + maxW, y); ctx.textAlign = 'left';
-      });
+      var rowH = 34;
+      blocks.push({ h: 26 + d.top.length * rowH, draw: function (y) {
+        ctx.fillStyle = C.ink3; ctx.font = '600 22px ' + FONT; ctx.fillText('Where my Buddies live', x, y + 20);
+        ctx.font = '600 25px ' + FONT;
+        d.top.forEach(function (t, i) {
+          var rowY = y + 26 + rowH * (i + 1) - 6;
+          ctx.fillStyle = C.ink;
+          var nm = t.name;
+          while (ctx.measureText(nm).width > maxW - 90 && nm.length > 4) nm = nm.slice(0, -2);
+          ctx.fillText(nm, x, rowY);
+          ctx.fillStyle = C.ink2; ctx.textAlign = 'right'; ctx.fillText(t.x.toFixed(1) + '×', x + maxW, rowY); ctx.textAlign = 'left';
+        });
+      } });
     }
+    var top = titleY + 40, bottom = footerY - 34;
+    var used = blocks.reduce(function (a, b) { return a + b.h; }, 0);
+    var gaps = blocks.filter(function (b, i) { return i > 0 && !b.tight; }).length;
+    var gap = gaps ? Math.max(10, Math.min(30, (bottom - top - used - (d.generic ? 0 : 6)) / gaps)) : 0;
+    var yy = top;
+    blocks.forEach(function (b, i) {
+      if (i > 0) yy += b.tight ? 6 : gap;
+      b.draw(yy);
+      yy += b.h;
+    });
     ctx.fillStyle = C.ink3; ctx.font = '600 22px ' + FONT;
-    ctx.fillText('Find yours: barakgila.com/ballot-buddies', x, H - 44);
+    ctx.fillText('Find yours: barakgila.com/ballot-buddies', x, footerY);
+    return { contentBottom: yy, limit: bottom, nameSize: size };
   }
   window.BallotCard = {
     draw: draw,
