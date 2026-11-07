@@ -31,7 +31,7 @@
   function activeItems() { return items.filter(active); }
   function corePicks() { return items.filter(function (it) { return own(it) && !it.uncontested && !extraState(it); }); }
   function extraState(it) { return it.section === 'State' && it.id !== 'california-governor' && it.id !== 'california-insurance-commissioner'; }
-  function hidden(it) { return extraState(it) || it.uncontested || !own(it) || (!hasPlace() && it.district); }
+  function hidden(it) { return extraState(it) || it.uncontested || (!viewing() && (!own(it) || (!hasPlace() && it.district))); }
 
   // Flat category indexes a set of picks observes for one race.
   function obsFor(it) {
@@ -114,7 +114,7 @@
   }
   function itemHTML(it) {
     var bits = [];
-    if (hasPlace() && it.district && !own(it)) bits.push('Not on your ballot');
+    if (!viewing() && hasPlace() && it.district && !own(it)) bits.push('Not on your ballot');
     if (it.rcv) bits.push('First choice');
     else if (it.multi) bits.push('Pick up to ' + it.seats);
     if (it.uncontested) bits.push('Uncontested');
@@ -129,12 +129,13 @@
   }
   function renderBallot() {
     refreshOwn();
-    var html = '<p class="key">Bar: people like you. Tick: all of San Francisco, or that district\'s voters in a district race.</p>';
-    if (!hasPlace()) html += '<p class="notice">Enter your ZIP above to bring up your congressional, assembly and supervisor races.</p>';
+    var html = '<p class="key">Bar: ' + (placeNb >= 0 ? 'voters here' : groupBloc >= 0 ? 'this group' : 'people like you') + '. Tick: all of San Francisco, or that district\'s voters in a district race.</p>';
+    if (!hasPlace() && !viewing()) html += '<p class="notice">Enter your ZIP above to bring up your congressional, assembly and supervisor races.</p>';
     var sections = [];
     items.forEach(function (it) { if (sections.indexOf(it.section) < 0) sections.push(it.section); });
     sections.forEach(function (s) {
-      var inS = items.filter(function (it) { return it.section === s; });
+      var inS = items.filter(function (it) { return it.section === s && shownInView(it); });
+      if (!inS.length) return;
       var main = inS.filter(function (it) { return !hidden(it); });
       var more = inS.filter(hidden).sort(function (a, b) { return (own(a) ? 0 : 1) - (own(b) ? 0 : 1) || (a.uncontested ? 1 : 0) - (b.uncontested ? 1 : 0); });
       html += '<h2>' + esc(s) + '</h2>' + main.map(itemHTML).join('');
@@ -145,7 +146,119 @@
     $('ballot').innerHTML = html;
   }
 
+  // Read-only view of how one bloc voted. Start over is the only way back.
+  var groupBloc = -1, placeNb = -1, MIN_PLACE_VOTES = 20;
+  function viewing() { return groupBloc >= 0 || placeNb >= 0; }
+  function anyPicks() { return items.some(answered); }
+  function blocName(i) { return NAMES[i + 1] || 'Bloc ' + (i + 1); }
+  function paintGroupBar() {
+    var locked = viewing();
+    $('group-hint').hidden = !locked;
+    $('group-btns').innerHTML = M.blocs.map(function (b) {
+      return '<button class="group-btn' + (b.id === groupBloc ? ' on' : '') + '" data-b="' + b.id + '" aria-pressed="' + (b.id === groupBloc) + '">' + esc(blocName(b.id)) + '</button>';
+    }).join('');
+    $('zip').disabled = locked; $('nb-pick').disabled = locked;
+    document.body.classList.toggle('group-mode', locked);
+    $('prefill').hidden = locked || sharedView || !get(CONTEST_KEY);
+    ['unique', 'axes', 'nb-match', 'endorsers'].forEach(function (id) { $(id).closest('section').hidden = locked; });
+  }
+  function viewRate(it, c) {
+    return groupBloc >= 0 ? c.b[groupBloc] : nbRate(G.nbhoods[placeNb], it, c) * 100;
+  }
+  function placeVotes(it) {
+    var nb = G.nbhoods[placeNb];
+    if (it.multi) return nb.c[it.choices[0].c] + nb.c[it.choices[0].c - 1];
+    return it.choices.reduce(function (a, x) { return a + nb.c[x.c]; }, 0);
+  }
+  // A place view only shows races its voters actually had.
+  function shownInView(it) { return placeNb < 0 || placeVotes(it) >= MIN_PLACE_VOTES; }
+  // Most distinctive citywide picks, from votes cast, so these match the race cards.
+  function highlights(rateOf) {
+    var rows = [];
+    items.forEach(function (it) {
+      if (it.district || it.uncontested) return;
+      var best = null;
+      it.choices.forEach(function (c) {
+        var city = cityRate(it, c) * 100, gap = rateOf(it, c) - city;
+        if (!best || gap > best.gap) best = { it: it, c: c, gap: gap, city: city };
+      });
+      rows.push(best);
+    });
+    return rows.sort(function (x, y) { return y.gap - x.gap; }).slice(0, 4).map(function (r) {
+      return '<li>' + esc(raceLabel(r.it)) + ': ' + esc(r.c.name) + ' <b>' + Math.round(rateOf(r.it, r.c)) + '%</b> vs ' + Math.round(r.city) + '% of SF</li>';
+    }).join('');
+  }
+  function blocHighlights(g) { return highlights(function (it, c) { return c.b[g]; }); }
+  function paintView() {
+    var isPlace = placeNb >= 0, nb = isPlace ? G.nbhoods[placeNb] : null, name = isPlace ? nb.name : blocName(groupBloc);
+    var shortLabel = isPlace ? 'Here' : 'Group', who = isPlace ? 'voters in ' + name : name;
+    items.forEach(function (it) {
+      var el = $('it-' + it.i); if (!el) return;
+      el.classList.remove('done');
+      var rates = it.choices.map(function (c) { return viewRate(it, c); });
+      var order = it.choices.map(function (c, i) { return i; }).sort(function (x, y) { return rates[y] - rates[x]; });
+      var tops = order.slice(0, it.multi ? it.seats : 1), btns = el.querySelectorAll('.choice');
+      it.choices.forEach(function (c, i) {
+        var btn = btns[i], city = cityRate(it, c);
+        btn.classList.toggle('on', tops.indexOf(i) >= 0);
+        btn.setAttribute('aria-pressed', 'false'); btn.setAttribute('aria-disabled', 'true');
+        btn.querySelector('.n-sf').textContent = (it.scope || 'SF') + ' ' + pct(city);
+        btn.querySelector('.n-you').innerHTML = shortLabel + ' <b>' + Math.round(rates[i]) + '%</b>';
+        btn.querySelector('.c-bar i').style.width = rates[i].toFixed(1) + '%';
+        var u = btn.querySelector('.c-bar u');
+        u.style.left = 'calc(' + (city * 100).toFixed(1) + '% - 1px)'; u.style.display = '';
+      });
+      var top = it.choices[order[0]], where = it.scope ? it.scope + ' voters' : 'SF';
+      el.querySelector('.say').textContent = it.multi
+        ? 'Most marked by ' + who + ': ' + tops.map(function (i) { return it.choices[i].name; }).join(', ') + '.'
+        : Math.round(rates[order[0]]) + '% of ' + who + ' picked ' + top.name + ', vs ' + pct(cityRate(it, top)) + ' of ' + where + '.';
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.more-n'), function (el) {
+      var n = items.filter(function (it) { return it.section === el.getAttribute('data-more') && hidden(it) && shownInView(it); }).length;
+      el.textContent = n + (n === 1 ? ' race' : ' races');
+    });
+    $('share-row').hidden = true;
+    if (isPlace) {
+      $('bloc-title').textContent = 'How voters here voted';
+      $('bloc').innerHTML = '<p class="bloc-name">' + esc(name) + '</p><p class="mini">' + comma(nb.ballots) + ' ballots counted, including Election Day.</p><ul class="tags">' + highlights(viewRate) + '</ul>';
+      buddyShare = null;
+      pathEls.forEach(function (el, i) { if (el) el.setAttribute('class', G.pcts[i].nb === placeNb ? 'q5' : ''); });
+      $('map-title').textContent = name;
+      $('map-note').textContent = 'Click another area to see how voters there voted.';
+      $('top-nb').innerHTML = '';
+      $('peek-text').textContent = name + ' · ' + comma(nb.ballots) + ' ballots';
+      return;
+    }
+    var b = M.blocs[groupBloc], q = new Float64Array(K), tot = 0, k;
+    $('bloc-title').textContent = 'How this group voted';
+    $('bloc').innerHTML = '<p class="bloc-name">' + esc(name) + '</p><p class="mini">' + pct(b.share) + ' of matched SF ballots.</p><ul class="tags">' + highlights(viewRate) + '</ul><p class="p-note"><b>Closest endorsers:</b> ' + esc(b.end.join(', ')) + '</p>';
+    for (k = 0; k < K; k++) if (M.f2b[k] === groupBloc) tot += M.nk[k];
+    for (k = 0; k < K; k++) q[k] = M.f2b[k] === groupBloc ? M.nk[k] / tot : 0;
+    paintMap(q, 3);
+    $('map-title').textContent = 'Where this group lives';
+    $('map-note').textContent = 'Darker areas have a larger share of this group. Click the map to see how voters there voted.';
+    $('peek-text').textContent = name + ' · ' + pct(b.share) + ' of ballots';
+  }
+  function chooseBloc(b) {
+    groupBloc = b; placeNb = -1;
+    paintGroupBar(); renderBallot(); paint();
+  }
+  function choosePlace(nb) {
+    if (nb < 0) return;
+    placeNb = nb; groupBloc = -1;
+    paintGroupBar(); renderBallot(); paint();
+    closeSheet();
+  }
+  function exitGroup() {
+    groupBloc = -1; placeNb = -1;
+    $('bloc-title').textContent = 'Your bloc';
+    $('map-title').textContent = 'Where your Buddies live';
+    paintGroupBar();
+  }
+
   function paint() {
+    if (viewing()) { paintView(); return; }
+    placeHint();
     var act = activeItems();
     var l = logLik(), q = posterior(l);
     var nPicked = items.filter(answered).length;
@@ -346,8 +459,7 @@
     var order = by.map(function (v, i) { return i; }).sort(function (a, b) { return by[b] - by[a]; });
     var top = M.blocs[order[0]];
     var html = '<p class="bloc-name">' + esc(NAMES[top.id + 1] || 'Bloc ' + (top.id + 1)) + '</p><p class="mini">' + pct(by[order[0]]) + ' likely, based on your picks. ' + pct(top.share) + ' of ballots.</p>';
-    var lines = top.picks.slice(0, 4).map(function (p) { return '<li>' + esc(p.item) + ': ' + esc(p.choice) + ' <b>' + p.pct + '%</b> vs ' + p.all + '% overall</li>'; });
-    html += '<ul class="tags">' + lines.join('') + '</ul>';
+    html += '<ul class="tags">' + blocHighlights(top.id) + '</ul>';
     html += '<ol class="rows">' + order.slice(1, 3).map(function (i) {
       return '<li><span>' + esc(NAMES[i + 1] || 'Bloc ' + (i + 1)) + '</span><span class="v">' + pct(by[i]) + '</span><span class="bar"><i style="width:' + (by[i] * 100).toFixed(1) + '%"></i></span></li>';
     }).join('') + '</ol>';
@@ -364,6 +476,7 @@
     Array.prototype.forEach.call(svg.querySelectorAll('path'), function (el) { pathEls[+el.getAttribute('data-i')] = el; });
     svg.addEventListener('click', function (e) {
       var t = e.target.closest('path'); if (!t) return;
+      if (viewing() || !anyPicks()) { choosePlace(G.pcts[+t.getAttribute('data-i')].nb); return; }
       var i = +t.getAttribute('data-i'), keep = loc.zip && (G.zips[loc.zip] || []).indexOf(i) >= 0;
       setLocation({ zip: keep ? loc.zip : '', nb: G.pcts[i].nb, pct: i });
     });
@@ -408,7 +521,7 @@
     if (nPicked < 3) {
       buddyShare = null;
       pathEls.forEach(function (el) { if (el) el.setAttribute('class', ''); });
-      $('map-note').textContent = 'Pick three races and your Buddies will appear across San Francisco.';
+      $('map-note').textContent = nPicked ? 'Pick three races and your Buddies will appear across San Francisco.' : 'Click the map to see how voters there voted.';
       $('top-nb').innerHTML = '';
     } else {
       var st = buddyStats(q);
@@ -509,6 +622,13 @@
     });
     return Object.keys(byType).filter(function (t) { return byType[t].length > 1; }).map(function (t) { return byType[t].join(' or '); });
   }
+  function placeHint() {
+    if (loc.pct >= 0 || loc.nb < 0) return;
+    var span = districtsSpanned(), picked = anyPicks();
+    $('where-hint').textContent = span.length
+      ? 'This area spans ' + span.join(', ') + (picked ? '. Tap your block on the map to settle it.' : '. Pick a race, then tap your block on the map to settle it.')
+      : picked ? 'Tap your block on the map if this looks off.' : '';
+  }
   function paintPlace() {
     refreshOwn();
     $('zip').value = loc.zip || '';
@@ -523,8 +643,7 @@
       hint.textContent = 'Your district races are set from this block.';
     } else if (loc.nb >= 0) {
       res.textContent = inZip.length > 1 ? 'Neighborhood:' : G.nbhoods[loc.nb].name;
-      var span = districtsSpanned();
-      hint.textContent = span.length ? 'This area spans ' + span.join(', ') + '. Tap your block on the map to settle it.' : 'Tap your block on the map if this looks off.';
+      placeHint();
     } else {
       res.textContent = ''; hint.textContent = 'Stays in your browser. Sets your neighborhood and district races.';
     }
@@ -561,6 +680,7 @@
         inf.setAttribute('aria-expanded', w.classList.toggle('open') ? 'true' : 'false');
         return;
       }
+      if (viewing()) return;
       var sk = e.target.closest('.skip');
       if (sk) {
         var si = items[+sk.closest('.item').getAttribute('data-i')];
@@ -587,7 +707,11 @@
       var d = e.target; if (d && d.tagName === 'DETAILS') openSections[d.getAttribute('data-s')] = d.open;
     }, true);
     $('next-q').addEventListener('click', nextQuestion);
-    $('reset').addEventListener('click', function () { picks = {}; savePicks(); renderBallot(); paint(); });
+    $('reset').addEventListener('click', function () { exitGroup(); picks = {}; savePicks(); renderBallot(); paint(); });
+    $('group-btns').addEventListener('click', function (e) {
+      var b = e.target.closest('.group-btn');
+      if (b) chooseBloc(+b.getAttribute('data-b'));
+    });
     $('share-link').addEventListener('click', copyLink);
     $('share-image').addEventListener('click', copyImage);
     $('own-ballot').addEventListener('click', function () { location.hash = ''; location.reload(); });
@@ -773,7 +897,7 @@
     paintPlace();
     if (get(CONTEST_KEY) && !sharedView) $('prefill').hidden = false;
     $('method-counts').textContent = 'Built from ' + comma(M.nMail + M.nQr) + ' whole ballots: ' + comma(M.nMail) + ' mail ballots matched from separate cards, and ' + comma(M.nQr) + ' QR ballots that are complete in the data.';
-    renderBallot(); initMap(); bind(); paint();
+    renderBallot(); initMap(); bind(); paintGroupBar(); paint();
   }).catch(function (err) {
     console.error(err);
     $('ballot').innerHTML = '<p class="notice">The ballot data did not load. Reload to try again.</p>';

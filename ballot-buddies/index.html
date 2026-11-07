@@ -23,6 +23,11 @@
     <h1>SF Ballot Buddies</h1>
     <p class="sub">Mark how you voted in San Francisco on November 3, 2026. See how rare your picks are, who votes like you, and where they live.</p>
     <p class="private">Your ZIP and picks stay in this browser unless you share a link, which includes them.</p>
+    <div class="group-bar">
+      <span class="group-label" id="group-label">See how this group voted:</span>
+      <div class="group-btns" id="group-btns" role="group" aria-labelledby="group-label"></div>
+      <p class="hint group-hint" id="group-hint" hidden>Picks are locked while you look at other voters. Start over to mark your own ballot.</p>
+    </div>
     <div class="start">
       <label for="zip">Your ZIP</label>
       <input id="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="94110" aria-describedby="where-hint">
@@ -30,7 +35,7 @@
       <span class="hint" id="where-hint">Stays in your browser. Sets your neighborhood and district races.</span>
       <span class="actions">
         <button class="btn" id="prefill" hidden>Use my contest predictions</button>
-        <button class="btn btn-ghost" id="reset">Start over</button>
+        <button class="btn-start" id="reset"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Start over</button>
       </span>
     </div>
   </header>
@@ -39,7 +44,7 @@
     <aside class="panel" id="panel" aria-label="Your results">
       <button class="sheet-close" id="sheet-close" aria-label="Close results">Close</button>
       <section class="card bloc-card">
-        <h2 class="p-h">Your bloc</h2>
+        <h2 class="p-h" id="bloc-title">Your bloc</h2>
         <div id="bloc"><p class="p-note">Pick a few races to find yours.</p></div>
         <div class="share-row" id="share-row" hidden>
           <button class="btn-share" id="share-link">Share my ballot</button>
