@@ -283,9 +283,10 @@
       else if (row[0] > score + 1e-6) above += row[1];
       else tied += row[1];
     });
-    var more = below >= above;
-    return { n: n, hit: hit, ready: true, tied: tied, pos: below + tied / 2,
-      text: more ? ax.more + ' than ' + Math.round(below * 100) + '% of voters' : ax.less + ' than ' + Math.round(above * 100) + '% of voters' };
+    // Nobody can pass a voter on the end of a scale, so a percent "more than" would undersell them.
+    var atTop = hit === n, atBottom = hit === 0, more = below >= above;
+    return { n: n, hit: hit, ready: true, tied: tied, pos: atTop ? 1 : atBottom ? 0 : below + tied / 2,
+      text: atTop ? ax.top : atBottom ? ax.bottom : more ? ax.more + ' than ' + Math.round(below * 100) + '% of voters' : ax.less + ' than ' + Math.round(above * 100) + '% of voters' };
   }
   function raceChip(ax) {
     return ax.races.map(function (r) { var it = byId[r.id]; return it ? '<li>' + esc(raceLabel(it)) + ': ' + esc(r.pick) + '</li>' : ''; }).join('');
