@@ -200,6 +200,8 @@
       var n = inMore.filter(answered).length;
       el.textContent = n ? n + ' of ' + inMore.length + ' picked' : inMore.length + (inMore.length === 1 ? ' race' : ' races');
     });
+    paintUnique(act);
+    paintAxes();
     paintRarity(act, l, q, nPicked);
     paintBloc(blocPosterior(), votedCount());
     paintMap(q, nPicked);
@@ -244,6 +246,74 @@
       return '<li>' + esc(raceLabel(r.it)) + ': ' + esc(r.c.name) + ', ' + pct(r.you) + ' of your Buddies</li>';
     }).join('') + '</ul>' : '';
   }
+  // How well the rest of a ballot predicts each vote, ranked against real voters with the same number of votes.
+  function predictability(list) {
+    var lv = logLik(items, true), sum = 0, hits = 0, n = 0;
+    list.forEach(function (it) {
+      if (it.multi || it.uncontested) return;
+      var ps = pickedChoices(it);
+      if (ps.length !== 1) return;
+      var pr = prediction(it, posterior(lv, it)), mine = it.choices.indexOf(ps[0]), best = 0;
+      pr.forEach(function (x, i) { if (x > pr[best]) best = i; });
+      sum += pr[mine]; hits += best === mine ? 1 : 0; n++;
+    });
+    if (!n) return { n: 0 };
+    var score = sum / n, bi = 0, i = 0;
+    M.pred.buckets.forEach(function (b, x) { if (Math.abs(b - n) < Math.abs(M.pred.buckets[bi] - n)) bi = x; });
+    var q = M.pred.q[bi];
+    while (i < 100 && q[i] < score) i++;
+    return { n: n, hits: hits, score: score, pct: i };
+  }
+  var MIN_SCORE_VOTES = 10;
+  function partyLineText(pct) {
+    return pct >= 50 ? 'More party-line than ' + pct + '% of voters' : 'More iconoclastic than ' + (100 - pct) + '% of voters';
+  }
+  // Share of a voter's votes on the positive side of an axis, ranked against whole ballots.
+  function axisResult(ax) {
+    var hit = 0, n = 0;
+    ax.races.forEach(function (r) {
+      var p = picks[r.id];
+      if (!p || !p.length || p[0] === SKIP) return;
+      n++; if (p[0] === r.pick) hit++;
+    });
+    if (n < ax.minVotes) return { n: n, hit: hit, ready: false };
+    var score = Math.round(hit / n * 10000) / 10000, below = 0, above = 0, tied = 0;
+    ax.table.forEach(function (row) {
+      if (row[0] < score - 1e-6) below += row[1];
+      else if (row[0] > score + 1e-6) above += row[1];
+      else tied += row[1];
+    });
+    var more = below >= above;
+    return { n: n, hit: hit, ready: true, tied: tied, pos: below + tied / 2,
+      text: more ? ax.more + ' than ' + Math.round(below * 100) + '% of voters' : ax.less + ' than ' + Math.round(above * 100) + '% of voters' };
+  }
+  function raceChip(ax) {
+    return ax.races.map(function (r) { var it = byId[r.id]; return it ? '<li>' + esc(raceLabel(it)) + ': ' + esc(r.pick) + '</li>' : ''; }).join('');
+  }
+  var axisOpen = {};
+  function paintAxes() {
+    $('axes').innerHTML = M.axes.map(function (ax) {
+      var r = axisResult(ax);
+      var body = r.ready
+        ? '<p class="axis-head">' + esc(r.text) + '</p><div class="scale scale-plain" role="img" aria-label="' + esc(r.text) + '"><i style="left:' + (Math.max(0.02, Math.min(0.98, r.pos)) * 100).toFixed(1) + '%"></i></div><div class="scale-ends"><span>' + esc(ax.ends[0]) + '</span><span>' + esc(ax.ends[1]) + '</span></div><p class="p-note">' + r.hit + ' of your ' + r.n + ' votes here took the ' + esc(ax.ends[1].replace('Most ', '')) + ' side. ' + (r.tied ? Math.round(r.tied * 100) + '% of voters match that.' : '') + '</p>'
+        : '<p class="p-note">Vote in ' + (ax.minVotes - r.n) + ' more of these races to see where you land.</p>';
+      return '<div class="axis"><h3 class="p-sub-plain">' + esc(ax.title) + '</h3>' + body + '<details class="sub" data-axis="' + ax.id + '"' + (axisOpen[ax.id] ? ' open' : '') + '><summary>What counts</summary><ul>' + raceChip(ax) + '</ul></details></div>';
+    }).join('');
+  }
+  function paintUnique(act) {
+    var r = predictability(act), box = $('unique');
+    if (r.n < MIN_SCORE_VOTES) {
+      box.innerHTML = '<p class="p-note">Vote in ' + (MIN_SCORE_VOTES - r.n) + ' more ' + (MIN_SCORE_VOTES - r.n === 1 ? 'race' : 'races') + ' to see where you land.</p>';
+      return;
+    }
+    var pct = Math.max(1, Math.min(99, r.pct));
+    var head = partyLineText(pct);
+    box.innerHTML = '<p class="stat stat-sm">' + head + '</p>' +
+      '<div class="scale" role="img" aria-label="' + esc(head) + '"><i style="left:' + pct + '%"></i></div>' +
+      '<div class="scale-ends"><span>Most iconoclastic</span><span>Most party-line</span></div>' +
+      '<p class="p-note">The rest of your ballot predicts ' + r.hits + ' of your ' + r.n + ' votes.</p>';
+  }
+
   function nextQuestion() {
     var l = logLik(), q = posterior(l), best = null, bestG = -1;
     corePicks().forEach(function (it) {
@@ -520,6 +590,10 @@
     $('share-link').addEventListener('click', copyLink);
     $('share-image').addEventListener('click', copyImage);
     $('own-ballot').addEventListener('click', function () { location.hash = ''; location.reload(); });
+    $('axes').addEventListener('toggle', function (e) {
+      var k = e.target.getAttribute('data-axis');
+      if (k) axisOpen[k] = e.target.open;
+    }, true);
     $('endorsers').addEventListener('toggle', function (e) {
       var d = e.target;
       if (d.getAttribute('data-k') === 'split') splitOpen = d.open;
@@ -620,11 +694,11 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, fallback);
     else fallback();
   }
-  function cardData(q, rarity, blocQ) {
+  function cardData(q, rarity, blocQ, lines) {
     var tg = topGroup(blocQ || q), st = buddyStats(q), bl = M.blocs[tg.bloc];
     return {
       name: NAMES[bl.id + 1] || 'Bloc ' + (bl.id + 1), share: bl.share, rarity: rarity,
-      top: st.top.map(function (r) { return { name: G.areas[r.a].name, x: r.v / st.avg }; }),
+      top: st.top.map(function (r) { return { name: G.areas[r.a].name, x: r.v / st.avg }; }), lines: lines || [],
       w: G.w, h: G.h,
       paths: G.pcts.filter(function (p) { return p.path; }).map(function (p) { return { d: p.path, step: st.step(p.area) }; })
     };
@@ -632,7 +706,10 @@
   function drawCurrent() {
     var l = logLik(), own = logLik(activeItems()), share = jointShare(own);
     var canvas = document.createElement('canvas');
-    window.BallotCard.draw(canvas, cardData(posterior(l), activeItems().some(answered) ? rareLabel(share) : null, blocPosterior()));
+    var lines = [], pr = predictability(activeItems());
+    if (pr.n >= MIN_SCORE_VOTES) lines.push(partyLineText(Math.max(1, Math.min(99, pr.pct))));
+    M.axes.forEach(function (ax) { var r = axisResult(ax); if (r.ready) lines.push(r.text); });
+    window.BallotCard.draw(canvas, cardData(posterior(l), activeItems().some(answered) ? rareLabel(share) : null, blocPosterior(), lines));
     return canvas;
   }
   function downloadCard(blob) {
@@ -654,6 +731,12 @@
   }
   // Used by the build step that pre-renders link preview images.
   window.BallotBuddies = {
+    scoreFor: function (p) {
+      var keep = picks; picks = p;
+      var r = predictability(items.filter(function (it) { return (p[it.id] || []).length; }));
+      picks = keep;
+      return r;
+    },
     groupCount: function () { return K; },
     groupBlocName: function (k) { var b = M.f2b[k]; return NAMES[b + 1] || 'Bloc ' + (b + 1); },
     renderGroup: function (k) {

@@ -58,11 +58,17 @@
         <ol class="rows" id="top-nb"></ol>
       </section>
       <section class="card">
-        <h2 class="p-h">How rare is your ballot?</h2>
-        <p class="stat" id="rare-stat">Start picking</p>
+        <h2 class="p-h">How unique a voter are you?</h2>
+        <div id="unique"><p class="p-note">Vote in 10 races to see where you land.</p></div>
+        <h3 class="p-sub">How rare is your exact ballot?</h3>
+        <p class="stat stat-sm" id="rare-stat">Start picking</p>
         <p class="p-note" id="rare-note">Every race you mark narrows it down.</p>
         <button class="btn btn-small" id="next-q" hidden>Ask me the most revealing race</button>
         <div id="break"></div>
+      </section>
+      <section class="card">
+        <h2 class="p-h">Where you land on the issues</h2>
+        <div id="axes"></div>
       </section>
       <section class="card">
         <h2 class="p-h">You vote most like</h2>
@@ -78,7 +84,7 @@
     <h2>How this works</h2>
     <p id="method-counts"></p>
     <p>San Francisco publishes each ballot card as a separate record. On mail ballots, cards usually stay in scan order, so we group them back into whole ballots. Some groups will be wrong. Election Day cards are shuffled and can't be grouped, so "people like you" means mail and QR voters. SF percentages use every counted card, including Election Day. For ranked races, we use your first choice. Judicial retention races are not included.</p>
-    <p>A statistical model sorts those ballots into about 200 small groups and four larger blocs. Blocs look only at how people voted, so a skipped race doesn't move yours. It never shows a real ballot. Your Buddies are the small groups that best match your picks, and that includes races outside your district. No real ballot has both, so the model learns each race from the voters who had it, and uses your pick as a clue to which group you fit. Those picks don't count toward your rarity score. The map shows estimates by area, and small counts use the wider bloc's pattern instead.</p>
+    <p>A statistical model sorts those ballots into about 200 small groups and four larger blocs. Blocs look only at how people voted, so a skipped race doesn't move yours. It never shows a real ballot. Your Buddies are the small groups that best match your picks, and that includes races outside your district. No real ballot has both, so the model learns each race from the voters who had it, and uses your pick as a clue to which group you fit. Those picks don't count toward your rarity score. Your place from iconoclastic to party-line comes from hiding each of your votes in turn and asking how well the rest of your ballot predicts it, compared with real voters who cast about as many votes. Some blocs are more predictable than others, so this scale partly reflects your bloc. The tax and urbanism scales count the share of your votes on one side of the races listed, compared with the whole ballots we could match. The map shows estimates by area, and small counts use the wider bloc's pattern instead.</p>
     <p>On held-out ballots, the model got about 80% of a hidden card right, compared with 69% from citywide totals. Neighborhoods are assigned by each precinct's center, so edges are approximate. Endorsements come from Sway voting groups and from each group's own published slate, and may contain errors.</p>
   </section>
   <footer class="wrap">Results through Nov 6, 2026. Precinct maps from DataSF. Vote counts from the San Francisco Department of Elections. Measure descriptions from Ballotpedia, with more detail on Sway.</footer>

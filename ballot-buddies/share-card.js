@@ -42,7 +42,8 @@
       if (fits || size <= 30) break;
       size -= 2;
     }
-    if (nameLines.length === 2) size = Math.min(size, 58);
+    var extra = d.lines || [];
+    if (nameLines.length === 2) size = Math.min(size, extra.length >= 2 ? 50 : 58);
     ctx.font = '700 ' + size + 'px ' + FONT;
 
     // Each block reports its height; spacing absorbs whatever is left above the footer.
@@ -64,16 +65,18 @@
       var stats = [];
       if (d.share != null) stats.push({ text: Math.round(d.share * 100) + '% of matched SF ballots', font: '500 26px ', color: C.ink2, size: 26 });
       if (d.rarity) stats.push({ text: 'My ballot: ' + d.rarity.charAt(0).toLowerCase() + d.rarity.slice(1), font: '700 28px ', color: C.ink, size: 28 });
-      if (stats.length) blocks.push({ h: stats.length * 38 - 6, draw: function (y) {
-        stats.forEach(function (s, i) { ctx.fillStyle = s.color; ctx.font = s.font + FONT; ctx.fillText(s.text, x, y + s.size - 2 + i * 38); });
+      extra.forEach(function (t) { stats.push({ text: t, font: '500 24px ', color: C.ink2, size: 24 }); });
+      var statH = extra.length >= 2 ? 32 : 38;
+      if (stats.length) blocks.push({ h: stats.length * statH - 6, draw: function (y) {
+        stats.forEach(function (s, i) { ctx.fillStyle = s.color; ctx.font = s.font + FONT; ctx.fillText(s.text, x, y + s.size - 2 + i * statH); });
       } });
     }
     if (d.top.length) {
-      var rowH = 34;
-      blocks.push({ h: 26 + d.top.length * rowH, draw: function (y) {
+      var rowH = 34, shown = extra.length >= 2 ? d.top.slice(0, 2) : d.top;
+      blocks.push({ h: 26 + shown.length * rowH, draw: function (y) {
         ctx.fillStyle = C.ink3; ctx.font = '600 22px ' + FONT; ctx.fillText('Where my Buddies live', x, y + 20);
         ctx.font = '600 25px ' + FONT;
-        d.top.forEach(function (t, i) {
+        shown.forEach(function (t, i) {
           var rowY = y + 26 + rowH * (i + 1) - 6;
           ctx.fillStyle = C.ink;
           var nm = t.name;

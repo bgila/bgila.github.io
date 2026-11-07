@@ -144,3 +144,14 @@ details.sub summary { font-weight: 600; }
 .foot-actions { flex: none; margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
 .race-link { font-size: 13px; font-weight: 600; color: var(--ink3); padding: 3px 6px; text-underline-offset: 2px; }
 .race-link:hover { color: var(--ink); }
+.stat-sm { font-size: 20px; line-height: 1.2; }
+.p-sub { font-size: 14px; font-weight: 700; margin: 14px 0 4px; padding-top: 12px; border-top: 1px solid #f0ece3; }
+.scale { position: relative; height: 8px; margin: 14px 0 6px; border-radius: 4px; background: linear-gradient(90deg, var(--s1), var(--s5)); }
+.scale i { position: absolute; top: -5px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: #fff; border: 3px solid var(--ink); }
+.scale-ends { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink3); }
+.axis + .axis { margin-top: 14px; padding-top: 12px; border-top: 1px solid #f0ece3; }
+.p-sub-plain { font-size: 13px; font-weight: 600; color: var(--ink3); margin: 0 0 4px; }
+.axis-head { font-size: 18px; font-weight: 700; line-height: 1.2; margin: 0; }
+.scale-plain { background: #e3ded3; }
+#axes details.sub, #axes details.sub summary { font-size: 14px; font-weight: 600; }
+#axes details.sub ul { font-weight: 400; }
