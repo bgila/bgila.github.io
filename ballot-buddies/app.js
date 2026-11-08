@@ -257,6 +257,7 @@
   }
 
   function paint() {
+    $('panel').classList.toggle('place-view', placeNb >= 0);
     if (viewing()) { paintView(); return; }
     placeHint();
     var act = activeItems();
