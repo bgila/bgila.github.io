@@ -178,5 +178,3 @@ body.group-mode .choice.on:hover { border-color: var(--pick); }
 .site-nav a { color: var(--ink2); text-decoration: none; }
 .site-nav a[aria-current] { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
 .site-nav a:hover { color: var(--ink); }
-.panel.place-view .sheet-close { order: -2; }
-.panel.place-view .map-card { order: -1; }
