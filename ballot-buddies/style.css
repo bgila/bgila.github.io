@@ -171,3 +171,10 @@ body.group-mode .choice.on:hover { border-color: var(--pick); }
 .btn-start { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; border: 1.5px solid var(--ink); border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 15px; line-height: 1.1; }
 .btn-start:hover { background: #33363c; border-color: #33363c; }
 .btn-start svg { flex: none; }
+.match-row { display: block; font-size: 17px; font-weight: 500; line-height: 1.35; }
+.match-row b { font-size: 22px; font-weight: 800; margin-right: 6px; }
+#rare-note a { font-weight: 600; }
+.site-nav { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; font-weight: 600; padding: 0 0 14px; }
+.site-nav a { color: var(--ink2); text-decoration: none; }
+.site-nav a[aria-current] { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.site-nav a:hover { color: var(--ink); }

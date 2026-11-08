@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SF Power Index</title>
+  <meta name="description" content="Which San Francisco endorsement guides did voters actually follow on November 3, 2026? The share of real ballots that matched each guide exactly.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="SF Power Index">
+  <meta property="og:description" content="Which SF endorsement guides did voters actually follow? The share of real ballots that matched each guide exactly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://barakgila.com/sf-power-index/">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800" rel="stylesheet" type="text/css">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="stylesheet" href="power.css?v=4">
+</head>
+<body>
+  <main class="wrap">
+    <nav class="site-nav" aria-label="SF ballot projects"><a href="../ballot-buddies/">SF Ballot Buddies</a><a href="../sf-ballot-quiz/">SF Ballot Quiz</a><a href="../sf-power-index/" aria-current="page">SF Power Index</a></nav>
+    <h1>SF Power Index</h1>
+    <p class="sub">Which endorsement guides did San Francisco actually follow? The share of real November 3 ballots that matched each guide's picks.</p>
+    <p class="you-note" id="you-note" hidden></p>
+    <div class="card">
+      <table id="tbl">
+        <thead><tr>
+          <th scope="col" class="g">Guide</th>
+          <th scope="col" class="num rc"><button data-k="racesOnBallot">Races</button></th>
+          <th scope="col" class="num"><button data-k="exact">Exact</button></th>
+          <th scope="col" class="num"><button data-k="within2">≤2 off</button></th>
+          <th scope="col" class="num"><button data-k="within4">≤4 off</button></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <button class="more" id="fair" aria-expanded="false"></button>
+    </div>
+    <section class="h2h">
+      <h2>Head to head</h2>
+      <div class="seg" role="group" aria-label="Which races to compare"><button id="m-common" aria-pressed="true"></button><button id="m-major" aria-pressed="false"></button></div>
+      <p id="h2h-intro"></p>
+      <details><summary>Which races</summary><p id="h2h-races"></p></details>
+      <div class="card">
+        <table id="tbl2">
+          <thead><tr>
+            <th scope="col" class="rk">#</th>
+            <th scope="col" class="g">Guide</th>
+            <th scope="col" class="num"><button data-k="exact">Exact</button></th>
+            <th scope="col" class="num"><button data-k="within2">≤2 off</button></th>
+            <th scope="col" class="num"><button data-k="within4">≤4 off</button></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="tie" id="tie" hidden></p>
+    </section>
+    <section class="how">
+      <h2>How this is counted</h2>
+      <p id="how-n"></p>
+      <ul>
+        <li><b>Exact</b> means the ballot marked every race the guide endorsed the way the guide did. <b>≤2 off</b> and <b>≤4 off</b> allow that many races to differ.</li>
+        <li><b>Fair-weather endorsers</b> took positions in fewer than 33 contested races. They are hidden by default because a short guide is far easier to match.</li>
+        <li>Only races the guide endorsed and that were on that voter's ballot count. <b>Races</b> is the average number of the guide's races on a ballot. A guide with fewer races is easier to match.</li>
+        <li>A blank race counts as a miss. Ranked races use the first choice. In District 8, a first choice of Manny Yekutiel is skipped, so the next choice counts.</li>
+        <li>In multi-seat races, the ballot has to mark all of the guide's picks.</li>
+        <li>Uncontested races are left out. Election Day paper ballots are left out, because their cards can't be matched to each other.</li>
+      </ul>
+    </section>
+  </main>
+  <script src="power.js?v=5"></script>
+</body>
+</html>

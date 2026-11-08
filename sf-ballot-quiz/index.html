@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SF Ballot Quiz</title>
+  <meta name="description" content="How well do you know how San Francisco voted on November 3, 2026? Ten questions. Guess the percentages.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="SF Ballot Quiz">
+  <meta property="og:description" content="How well do you know how San Francisco voted? Ten questions. Guess the percentages.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://barakgila.com/sf-ballot-quiz/">
+  <meta property="og:image" content="https://barakgila.com/sf-ballot-quiz/og.jpg">
+  <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://barakgila.com/sf-ballot-quiz/og.jpg">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800" rel="stylesheet" type="text/css">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="stylesheet" href="quiz.css?v=2">
+</head>
+<body>
+  <main class="wrap">
+    <nav class="site-nav" aria-label="SF ballot projects"><a href="../ballot-buddies/">SF Ballot Buddies</a><a href="../sf-ballot-quiz/" aria-current="page">SF Ballot Quiz</a><a href="../sf-power-index/">SF Power Index</a></nav>
+    <h1>SF Ballot Quiz</h1>
+    <p class="sub">How well do you know how San Francisco voted on November 3? Ten questions. Guess the percentages.</p>
+    <p class="friend" id="friend" hidden></p>
+    <section class="card" id="game" aria-live="polite"><p class="muted">Loading questions…</p></section>
+    <p class="fine" id="fine"></p>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="quiz.js?v=3"></script>
+</body>
+</html>

@@ -324,6 +324,36 @@
   }
 
   function jointShare(l) { return Math.exp(logJoint(l)); }
+  function matchShares(list) {
+    var probs = [];
+    list.forEach(function (it) {
+      var cs = obsFor(it); if (!cs.length) return;
+      var row = new Float64Array(K);
+      for (var k = 0; k < K; k++) { var p = 1; cs.forEach(function (c) { p *= M.th[k][c] / 10000; }); row[k] = p; }
+      probs.push(row);
+    });
+    var R = probs.length, exact = 0, w2 = 0, w4 = 0;
+    if (!R) return null;
+    for (var k = 0; k < K; k++) {
+      var D = new Float64Array(R + 1); D[0] = 1;
+      for (var r = 0; r < R; r++) {
+        var q = probs[r][k];
+        for (var dd = r + 1; dd >= 1; dd--) D[dd] = D[dd] * q + D[dd - 1] * (1 - q);
+        D[0] *= q;
+      }
+      var c2 = 0, c4 = 0;
+      for (var x = 0; x <= Math.min(4, R); x++) { if (x <= 2) c2 += D[x]; c4 += D[x]; }
+      exact += M.pi[k] * D[0]; w2 += M.pi[k] * c2; w4 += M.pi[k] * c4;
+    }
+    return { exact: exact, within2: w2, within4: w4, races: R };
+  }
+  function smallPct(x) {
+    var v = x * 100;
+    if (v >= 10) return Math.round(v) + '%';
+    if (v >= 1) return v.toFixed(1) + '%';
+    if (v >= 0.01) return v.toFixed(2) + '%';
+    return '<0.01%';
+  }
   function rareLabel(share) {
     if (share > 0.5) return 'Most voters agree';
     if (1 / share > M.nBallots) return 'Likely one of a kind';
@@ -339,16 +369,9 @@
       brk.innerHTML = '';
       return;
     }
-    var lOwn = logLik(act), share = jointShare(lOwn);
-    $('rare-stat').textContent = rareLabel(share);
-    var note = ownPicked.length === 1 ? 'Share of ballots with this pick.' : 'Share of ballots with all ' + ownPicked.length + ' of your picks.';
-    if (core.filter(answered).length >= core.length * 0.9) {
-      var nobs = act.reduce(function (a, it) { return a + obsFor(it).length; }, 0);
-      var s = logJoint(lOwn) / Math.max(nobs, 1), i = 0;
-      while (i < 100 && M.rarity[i] < s) i++;
-      note = 'Your full ballot is rarer than ' + Math.min(99, Math.max(1, 100 - i)) + '% of ballots.';
-    }
-    $('rare-note').textContent = note;
+    var ms = matchShares(act);
+    $('rare-stat').innerHTML = '<span class="match-row"><b>' + smallPct(ms.exact) + '</b> had your exact picks</span><span class="match-row"><b>' + smallPct(ms.within2) + '</b> were off by 2 or fewer</span><span class="match-row"><b>' + smallPct(ms.within4) + '</b> were off by 4 or fewer</span>';
+    $('rare-note').innerHTML = 'Share of ballots, estimated across the ' + ms.races + ' race' + (ms.races === 1 ? '' : 's') + ' you marked. <a href="../sf-power-index/#you=' + [ms.exact, ms.within2, ms.within4, ms.races].map(function (x) { return +x.toPrecision(4); }).join(',') + '">Compare your reach with SF endorsement guides</a>';
     var rows = ownPicked.map(function (it) {
       var ps = pickedChoices(it);
       if (ps.length !== 1 || it.uncontested) return null;
@@ -595,7 +618,7 @@
     var bi = by.indexOf(Math.max.apply(null, by));
     var share = jointShare(logLik(act));
     var core = corePicks();
-    $('peek-text').textContent = core.filter(answered).length + ' of ' + core.length + ' · ' + rareLabel(share) + (votedCount() >= 3 ? ' · ' + (NAMES[bi + 1] || 'Bloc ' + (bi + 1)) : '');
+    $('peek-text').textContent = core.filter(answered).length + ' of ' + core.length + ' · ' + smallPct(share) + ' exact' + (votedCount() >= 3 ? ' · ' + (NAMES[bi + 1] || 'Bloc ' + (bi + 1)) : '');
   }
 
   var sharedView = false;
@@ -834,7 +857,7 @@
     var lines = [], pr = predictability(activeItems());
     if (pr.n >= MIN_SCORE_VOTES) lines.push(partyLineText(Math.max(1, Math.min(99, pr.pct))));
     M.axes.forEach(function (ax) { var r = axisResult(ax); if (r.ready) lines.push(r.text); });
-    window.BallotCard.draw(canvas, cardData(posterior(l), activeItems().some(answered) ? rareLabel(share) : null, blocPosterior(), lines));
+    window.BallotCard.draw(canvas, cardData(posterior(l), activeItems().some(answered) ? 'My exact picks: ' + smallPct(share) + ' of ballots' : null, blocPosterior(), lines));
     return canvas;
   }
   function downloadCard(blob) {

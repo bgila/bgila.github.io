@@ -64,7 +64,7 @@
     } else {
       var stats = [];
       if (d.share != null) stats.push({ text: Math.round(d.share * 100) + '% of matched SF ballots', font: '500 26px ', color: C.ink2, size: 26 });
-      if (d.rarity) stats.push({ text: 'My ballot: ' + d.rarity.charAt(0).toLowerCase() + d.rarity.slice(1), font: '700 28px ', color: C.ink, size: 28 });
+      if (d.rarity) stats.push({ text: d.rarity, font: '700 28px ', color: C.ink, size: 28 });
       extra.forEach(function (t) { stats.push({ text: t, font: '500 24px ', color: C.ink2, size: 24 }); });
       var statH = extra.length >= 2 ? 32 : 38;
       if (stats.length) blocks.push({ h: stats.length * statH - 6, draw: function (y) {
